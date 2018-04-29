@@ -1,0 +1,26 @@
+{
+  "name": "byte-list",
+  "version": "1.0.0",
+  "description": "Easy to use byte serialization/deserialization",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjclyde/byte-list.git"
+  },
+  "keywords": [
+    "byte",
+    "bytes",
+    "list",
+    "serialization",
+    "deserialization"
+  ],
+  "author": "Matt Clyde",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mjclyde/byte-list/issues"
+  },
+  "homepage": "https://github.com/mjclyde/byte-list#readme"
+}
