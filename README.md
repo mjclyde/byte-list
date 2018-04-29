@@ -25,17 +25,17 @@ console.log(bytes.readUInt32());
 
 bytes.index = 0;
 console.log(bytes.readUInt16());
-// 43981   (0xABCD)
+// 43981        (0xABCD)
 console.log(bytes.readUInt16());
-// 4660   (0x1234)
+// 4660         (0x1234)
 
 bytes.index = 0;
 console.log(bytes.readByte());
-// 171   (0xAB)
+// 171          (0xAB)
 console.log(bytes.readByte());
-// 205   (0xCD)
+// 205          (0xCD)
 console.log(bytes.readByte());
-// 18   (0x12)
+// 18           (0x12)
 console.log(bytes.readByte());
-// 52   (0x34)
+// 52           (0x34)
 ```
