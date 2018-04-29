@@ -2,9 +2,10 @@
   "name": "byte-list",
   "version": "1.0.0",
   "description": "Easy to use byte serialization/deserialization",
-  "main": "index.js",
+  "main": "build/byteList.bundle.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,13 @@
   "bugs": {
     "url": "https://github.com/mjclyde/byte-list/issues"
   },
-  "homepage": "https://github.com/mjclyde/byte-list#readme"
+  "homepage": "https://github.com/mjclyde/byte-list#readme",
+  "devDependencies": {
+    "@types/node": "^10.0.0",
+    "chai": "^4.1.2",
+    "lodash": "^4.17.10",
+    "mocha": "^5.1.1",
+    "typescript": "^2.8.3"
+  },
+  "dependencies": {}
 }
