@@ -4,6 +4,7 @@
   "description": "Easy to use byte serialization/deserialization",
   "main": "build/byteList.bundle.js",
   "scripts": {
+    "postinstall": "npm run build",
     "build": "tsc",
     "test": "mocha"
   },
