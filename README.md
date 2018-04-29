@@ -1,6 +1,7 @@
 # ByteList
 
 [![Build Status](https://travis-ci.org/mjclyde/byte-list.svg?branch=master)](https://travis-ci.org/mjclyde/byte-list)
+[![Coverage Status](https://coveralls.io/repos/github/mjclyde/byte-list/badge.svg?branch=master)](https://coveralls.io/github/mjclyde/byte-list?branch=master)
 
 ```sh
    $ npm install byte-list
