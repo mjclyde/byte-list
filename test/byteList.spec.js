@@ -300,4 +300,96 @@ describe('ByteList', () => {
 
     });
 
+    describe('Checking for overruns', () => {
+
+        it('Should throw overrun for byte', () => {
+            const bytes = new ByteList([1]);
+            bytes.index = 0;
+            assert.equal(bytes.readByte(), 1);
+            assert.throws(() => {
+                bytes.readByte();
+            });
+        });
+
+        it('Should throw overrun for bool', () => {
+            const bytes = new ByteList([1]);
+            bytes.index = 0;
+            assert.equal(bytes.readBool(), true);
+            assert.throws(() => {
+                bytes.readBool();
+            });
+        });
+
+        it('Should throw overrun for int8', () => {
+            const bytes = new ByteList([1]);
+            bytes.index = 0;
+            assert.equal(bytes.readInt8(), 1);
+            assert.throws(() => {
+                bytes.readInt8();
+            });
+        });
+
+        it('Should throw overrun for int16', () => {
+            const bytes = new ByteList([1, 0]);
+            bytes.index = 0;
+            assert.equal(bytes.readInt16(), 1);
+            assert.throws(() => {
+                bytes.readInt16();
+            });
+        });
+
+        it('Should throw overrun for uint16', () => {
+            const bytes = new ByteList([1, 0]);
+            bytes.index = 0;
+            assert.equal(bytes.readUInt16(), 1);
+            assert.throws(() => {
+                bytes.readUInt16();
+            });
+        });
+
+        it('Should throw overrun for int32', () => {
+            const bytes = new ByteList([1, 0, 0, 0]);
+            bytes.index = 0;
+            assert.equal(bytes.readInt32(), 1);
+            assert.throws(() => {
+                bytes.readInt32();
+            });
+        });
+
+        it('Should throw overrun for uint32', () => {
+            const bytes = new ByteList([1, 0, 0, 0]);
+            bytes.index = 0;
+            assert.equal(bytes.readUInt32(), 1);
+            assert.throws(() => {
+                bytes.readUInt32();
+            });
+        });
+
+        it('Should throw overrun for float', () => {
+            const bytes = new ByteList([0, 0, 0, 0, 0, 0, 0, 1]);
+            bytes.index = 0;
+            assert.equal(bytes.readFloat(), 0);
+            assert.throws(() => {
+                bytes.readFloat();
+            });
+        });
+
+        it('Should throw overrun for double', () => {
+            const bytes = new ByteList([0, 0, 0, 0, 0, 0, 0, 0]);
+            bytes.index = 0;
+            assert.equal(bytes.readDouble(), 0);
+            assert.throws(() => {
+                bytes.readDouble();
+            });
+        });
+
+        it('Should throw overrun for date', () => {
+            const bytes = new ByteList([0, 0, 0, 0, 0, 0]);
+            bytes.index = 0;
+            const date = bytes.readDate();
+            assert.equal(date, null);
+        });
+
+    });
+
 });

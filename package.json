@@ -6,7 +6,9 @@
   "types": "dist/byteList.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "nyc mocha && nyc report --reporter=text",
+    "build:watch": "tsc -w",
+    "test": "nyc mocha && nyc report --reporter=text --reporter=html",
+    "test:watch": "mocha -w",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
