@@ -384,7 +384,7 @@ describe('ByteList', () => {
         });
 
         it('Should throw overrun for date', () => {
-            const bytes = new ByteList([0, 0, 0, 0, 0, 0]);
+            const bytes = new ByteList([0, 0, 0, 0, 0]);
             bytes.index = 0;
             const date = bytes.readDate();
             assert.equal(date, null);

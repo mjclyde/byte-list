@@ -195,11 +195,11 @@ export class ByteList {
     public writeDate(date: Date, options: any = {}) {
         const buffer = new Buffer(6);
         buffer.writeInt8(!date ? 0 : date.getUTCFullYear() - 2000, 0);
-        buffer.writeInt8(!date ? 0 : date.getUTCMonth(), 2);
-        buffer.writeInt8(!date ? 0 : date.getUTCDate(), 3);
-        buffer.writeInt8(!date ? 0 : date.getUTCHours(), 4);
-        buffer.writeInt8(!date ? 0 : date.getUTCMinutes(), 5);
-        buffer.writeInt8(!date ? 0 : date.getUTCSeconds(), 6);
+        buffer.writeInt8(!date ? 0 : date.getUTCMonth(), 1);
+        buffer.writeInt8(!date ? 0 : date.getUTCDate(), 2);
+        buffer.writeInt8(!date ? 0 : date.getUTCHours(), 3);
+        buffer.writeInt8(!date ? 0 : date.getUTCMinutes(), 4);
+        buffer.writeInt8(!date ? 0 : date.getUTCSeconds(), 5);
 
         if (options.insert) {
             this.insert(buffer);
