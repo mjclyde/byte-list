@@ -193,13 +193,8 @@ export class ByteList {
     }
 
     public writeDate(date: Date, options: any = {}) {
-        const buffer = new Buffer(7);
-        const year = !date ? 0 : date.getUTCFullYear();
-        if (this.useLittleEndian) {
-            buffer.writeUInt16LE(year, 0);
-        } else {
-            buffer.writeUInt16BE(year, 0);
-        }
+        const buffer = new Buffer(6);
+        buffer.writeInt8(!date ? 0 : date.getUTCFullYear() - 2000, 0);
         buffer.writeInt8(!date ? 0 : date.getUTCMonth(), 2);
         buffer.writeInt8(!date ? 0 : date.getUTCDate(), 3);
         buffer.writeInt8(!date ? 0 : date.getUTCHours(), 4);
@@ -331,7 +326,7 @@ export class ByteList {
 
     public readDate(): Date | null {
         try {
-            const year = this.readUInt16();
+            const year = this.readInt8() + 2000;
             const month = this.readByte();
             const day = this.readByte();
             const hour = this.readByte();
