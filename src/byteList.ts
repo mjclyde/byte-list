@@ -1,3 +1,4 @@
+const Buffer = require('buffer/').Buffer;
 
 export class ByteList {
 
@@ -33,38 +34,23 @@ export class ByteList {
     }
 
     public concat(buffer) {
-        if (buffer instanceof ArrayBuffer) {
-            buffer = new Uint8Array(buffer);
-            for (let i = 0; i < buffer.length; ++i) {
-                this.writeByte(buffer[i]);
-            }
-        } else {
-            if (buffer instanceof ByteList) {
-                buffer = buffer.buffer;
-            }
-            this.buffer = Buffer.concat([this.buffer, buffer], (this.buffer.length + buffer.length));
-            this.index += buffer.length;
+        if (buffer instanceof ByteList) {
+            buffer = buffer.buffer;
         }
+        this.buffer = Buffer.concat([this.buffer, buffer], (this.buffer.length + buffer.length));
+        this.index += buffer.length;
     }
 
     public insert(buffer) {
-
-        if (buffer instanceof ArrayBuffer) {
-            buffer = new Uint8Array(buffer);
-            for (let i = 0; i < buffer.length; ++i) {
-                this.writeByte(buffer[i], {insert: true});
-            }
-        } else {
-            if (buffer instanceof ByteList) {
-                buffer = buffer.buffer;
-            }
-
-            const part1 = this.buffer.slice(0, this.index);
-            const part2 = this.buffer.slice(this.index, this.buffer.length);
-
-            this.buffer = Buffer.concat([part1, buffer, part2], (part1.length + buffer.length + part2.length));
-            this.index += buffer.length;
+        if (buffer instanceof ByteList) {
+            buffer = buffer.buffer;
         }
+
+        const part1 = this.buffer.slice(0, this.index);
+        const part2 = this.buffer.slice(this.index, this.buffer.length);
+
+        this.buffer = Buffer.concat([part1, buffer, part2], (part1.length + buffer.length + part2.length));
+        this.index += buffer.length;
     }
 
     public peekByte(offset: number = 0) {
