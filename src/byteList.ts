@@ -463,7 +463,7 @@ export class ByteList {
 
   public toString() {
     let str = '';
-    for (const byte of this.buffer) {
+    for (const byte of (this.buffer as any)) {
       str += byte.toString(16).toUpperCase() + ' ';
     }
     return str;
