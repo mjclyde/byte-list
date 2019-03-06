@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 const Buffer = require('buffer/').Buffer;
 
 export enum DataTypes {
@@ -220,11 +221,14 @@ export class ByteList {
     }
   }
 
-  public writeString(str: string = '', options: any = {}) {
+  public writeString(str: string = '', options: {insert?: boolean, length?: number} = {}) {
+    str = !options.length ? str : _.padEnd(str, options.length, '\0');
     const buf = new Buffer(str, 'utf-8');
     const bytes = new ByteList();
     bytes.useLittleEndian = this.useLittleEndian;
-    bytes.writeUInt16(buf.length);
+    if (!options.length) {
+      bytes.writeUInt16(buf.length);
+    }
     bytes.concat(buf);
 
     if (options.insert) {
@@ -235,13 +239,15 @@ export class ByteList {
   }
 
   public writeByteArray(list, options) {
-    this.writeByte(list.length, options);
-    list.forEach((l) => {
-      this.writeByte(l, options);
+    this.writeByte(list ? list.length : 0, options);
+    _.forEach(list, (l) => {
+      list.forEach((l) => {
+        this.writeByte(l, options);
+      });
     });
   }
 
-  public writeData(type: DataTypes, val: any, options?: any) {
+  public writeData(type: DataTypes, val?: any, options?: any) {
     switch (type) {
       case DataTypes.BYTE:
         this.writeByte(val, options);
@@ -400,12 +406,12 @@ export class ByteList {
     return bytes;
   }
 
-  public readString(): string {
+  public readString(options: {length?: number} = {}): string {
     if (this.buffer.length < this.index + 2) {
       console.log('Buffer Overrun');
     }
 
-    const length = this.readUInt16();
+    const length = options.length || this.readUInt16();
     if (this.buffer.length < this.index + length) {
       console.log('Buffer Overrun');
     }
@@ -453,6 +459,14 @@ export class ByteList {
       case DataTypes.BYTE_ARRAY:
         return this.readByteArray();
     }
+  }
+
+  public toString() {
+    let str = '';
+    for (const byte of this.buffer) {
+      str += byte.toString(16).toUpperCase() + ' ';
+    }
+    return str;
   }
 
 }

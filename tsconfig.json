@@ -7,7 +7,8 @@
     "noImplicitAny": false,
     "types": ["node"],
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "downlevelIteration": true
   },
   "include": [
     "./src/**/*.ts"
