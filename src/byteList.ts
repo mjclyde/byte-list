@@ -430,7 +430,7 @@ export class ByteList {
     return array;
   }
 
-  public readData(type: DataTypes): any {
+  public readData(type: DataTypes, options: any = {}): any {
     switch (type) {
       case DataTypes.BYTE:
         return this.readByte();
@@ -455,7 +455,7 @@ export class ByteList {
       case DataTypes.DATE:
         return this.readDate();
       case DataTypes.STRING:
-        return this.readString();
+        return this.readString(options);
       case DataTypes.BYTE_ARRAY:
         return this.readByteArray();
     }
