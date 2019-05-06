@@ -28,6 +28,19 @@ export class ByteList {
     return buf;
   }
 
+  public static SetBit(num: number, val: boolean, bit: number): number {
+    if (val) {
+      num |= 1 << bit;
+    } else {
+      num &= ~(1 << bit);
+    }
+    return num;
+  }
+
+  public static GetBit(num: number, bit: number): boolean {
+    return (num & (1 << bit)) != 0
+  }
+
 
   public buffer: Buffer;
   public index: number;
@@ -221,7 +234,7 @@ export class ByteList {
     }
   }
 
-  public writeString(str: string = '', options: {insert?: boolean, length?: number} = {}) {
+  public writeString(str: string = '', options: { insert?: boolean, length?: number } = {}) {
     str = !options.length ? str : _.padEnd(str, options.length, '\0');
     const buf = new Buffer(str, 'utf-8');
     const bytes = new ByteList();
@@ -406,7 +419,7 @@ export class ByteList {
     return bytes;
   }
 
-  public readString(options: {length?: number} = {}): string {
+  public readString(options: { length?: number } = {}): string {
     if (this.buffer.length < this.index + 2) {
       console.log('Buffer Overrun');
     }

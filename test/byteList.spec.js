@@ -462,4 +462,28 @@ describe('ByteList', () => {
 
   });
 
+  describe('Bitwise Operation', () => {
+
+    it('Should be able to set a bit', () => {
+      let number = 0;
+      number = ByteList.SetBit(number, true, 0);
+      assert.equal(number, 1);
+      number = ByteList.SetBit(number, true, 1);
+      assert.equal(number, 3);
+      number = ByteList.SetBit(number, false, 0);
+      assert.equal(number, 2);
+      number = ByteList.SetBit(number, false, 1);
+      number = ByteList.SetBit(number, true, 2);
+      assert.equal(number, 4);
+    });
+
+    it('Should be able to get a bit', () => {
+      const number = 6;
+      assert.equal(ByteList.GetBit(number, 0), false);
+      assert.equal(ByteList.GetBit(number, 1), true);
+      assert.equal(ByteList.GetBit(number, 2), true);
+    });
+
+  });
+
 });
