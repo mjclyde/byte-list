@@ -74,7 +74,7 @@ export class ByteList {
   }
 
   public concat(buffer) {
-    if (buffer instanceof ByteList) {
+    if (buffer && buffer.buffer && buffer.buffer instanceof Uint8Array) {
       buffer = buffer.buffer;
     }
     this.buffer = Buffer.concat([this.buffer, buffer], (this.buffer.length + buffer.length));

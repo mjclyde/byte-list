@@ -61,6 +61,17 @@ describe('ByteList', () => {
       assert.equal(bytes.readByte(), 4);
     });
 
+    it('should concat(ByteList)', () => {
+      const bytes = new ByteList([1, 2]);
+      const otherBytes = new ByteList([3, 4])
+      bytes.concat(otherBytes);
+      bytes.index = 0;
+      assert.equal(bytes.readByte(), 1);
+      assert.equal(bytes.readByte(), 2);
+      assert.equal(bytes.readByte(), 3);
+      assert.equal(bytes.readByte(), 4);
+    });
+
     it('should concat() with index not at the end', () => {
       const bytes = new ByteList([1, 2]);
       bytes.index = 0;
