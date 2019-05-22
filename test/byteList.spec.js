@@ -318,6 +318,14 @@ describe('ByteList', () => {
       d.writeString('123', {length: 7});
       d.index = 0;
       assert.equal(d.readString({length: 7}), '123\0\0\0\0');
+
+      const e = new ByteList();
+      e.writeString('123456789', {length: 5});
+      e.writeString('987654321', {length: 3});
+      e.index = 0;
+      assert.equal(e.readString({length: 5}), '12345');
+      assert.equal(e.readString({length: 3}), '987');
+
     });
 
     it('should writeByteArray()', () => {

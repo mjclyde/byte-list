@@ -1,6 +1,6 @@
 {
   "name": "byte-list",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Easy to use byte serialization/deserialization",
   "main": "dist/byteList.js",
   "types": "dist/byteList.d.ts",
@@ -34,7 +34,7 @@
     "chai": "^4.2.0",
     "coveralls": "^3.0.2",
     "mocha": "^6.0.0",
-    "nyc": "^13.3.0",
+    "nyc": "^14.1.1",
     "typescript": "^3.3.3"
   },
   "dependencies": {

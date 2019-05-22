@@ -235,7 +235,7 @@ export class ByteList {
   }
 
   public writeString(str: string = '', options: { insert?: boolean, length?: number } = {}) {
-    str = !options.length ? str : _.padEnd(str, options.length, '\0');
+    str = !options.length ? str : (str.length > options.length ? str.substr(0, options.length) : _.padEnd(str, options.length, '\0'));
     const buf = new Buffer(str, 'utf-8');
     const bytes = new ByteList();
     bytes.useLittleEndian = this.useLittleEndian;
