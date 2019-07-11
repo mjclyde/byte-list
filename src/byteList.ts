@@ -36,8 +36,15 @@ export class ByteList {
   public index: number;
   public useLittleEndian: boolean = true;
   public get length() { return this._length; }
+  public get paddingSize() { return this._paddingSize; }
+  public set paddingSize(val: number) {
+    this._paddingSize = val;
+    if (this._paddingSize < 0) {
+      this._paddingSize = 0;
+    }
+  }
 
-  private _paddingSize = 5;
+  private _paddingSize = 100;
   private _length: number;
 
   constructor(bytes?: any) {
@@ -486,7 +493,7 @@ export class ByteList {
   private prepareBuffer(length: number) {
     const spaceLeft = this.buffer.length - this.length;
     if (length > spaceLeft) {
-      this.buffer = Buffer.concat([this.buffer, new Buffer(this._paddingSize + length)], this.buffer.length + this._paddingSize + length);
+      this.buffer = Buffer.concat([this.buffer, new Buffer(this._paddingSize + length)], this.buffer.length + this._paddingSize + length);
     }
   }
 
