@@ -32,10 +32,10 @@ export class ByteList {
     return (num & (1 << bit)) != 0
   }
 
-  public buffer: Buffer;
   public index: number;
   public useLittleEndian: boolean = true;
   public get length() { return this._length; }
+  public get buffer() { return this.getBuffer(); }
   public get paddingSize() { return this._paddingSize; }
   public set paddingSize(val: number) {
     this._paddingSize = val;
@@ -46,11 +46,12 @@ export class ByteList {
 
   private _paddingSize = 100;
   private _length: number;
+  private _buffer: Buffer;
 
   constructor(bytes?: any) {
     this.index = 0;
     this._length = 0;
-    this.buffer = new Buffer(this._paddingSize);
+    this._buffer = new Buffer(this._paddingSize);
     if (isString(bytes)) {
       this.writeString(bytes);
     } else if (bytes) {
@@ -59,7 +60,7 @@ export class ByteList {
   }
 
   public getBuffer() {
-    return new Buffer(this.buffer.buffer, 0, this._length);
+    return new Buffer(this._buffer.buffer, 0, this._length);
   }
 
   public getLength() {
@@ -72,19 +73,19 @@ export class ByteList {
     }
     this.prepareBuffer(buffer.length);
     for (let i = 0; i < buffer.length; i++) {
-      this.buffer.writeUInt8(buffer[i], this._length++);
+      this._buffer.writeUInt8(buffer[i], this._length++);
     }
   }
 
   public insert(buffer) {
     if (buffer instanceof ByteList) {
-      buffer = buffer.buffer;
+      buffer = buffer._buffer;
     }
 
-    const part1 = this.buffer.slice(0, this.index);
-    const part2 = this.buffer.slice(this.index, this.buffer.length);
+    const part1 = this._buffer.slice(0, this.index);
+    const part2 = this._buffer.slice(this.index, this._buffer.length);
 
-    this.buffer = Buffer.concat([part1, buffer, part2], (part1.length + buffer.length + part2.length));
+    this._buffer = Buffer.concat([part1, buffer, part2], (part1.length + buffer.length + part2.length));
     this.index += buffer.length;
     this._length += buffer.length;
   }
@@ -93,7 +94,7 @@ export class ByteList {
     if (this.length < this.index + offset + 1) {
       throw new Error('Buffer Overrun');
     }
-    return this.buffer.readUInt8(this.index + offset);
+    return this._buffer.readUInt8(this.index + offset);
   }
 
   public peekUInt16(offset: number = 0) {
@@ -101,9 +102,9 @@ export class ByteList {
       throw new Error('Buffer Overrun');
     }
     if (this.useLittleEndian) {
-      return this.buffer.readUInt16LE(this.index + offset);
+      return this._buffer.readUInt16LE(this.index + offset);
     } else {
-      return this.buffer.readUInt16BE(this.index + offset);
+      return this._buffer.readUInt16BE(this.index + offset);
     }
   }
 
@@ -112,7 +113,7 @@ export class ByteList {
       byte = byte.charCodeAt(0);
     }
     this.prepareBuffer(1);
-    const buf = options.insert ? new Buffer(1) : this.buffer;
+    const buf = options.insert ? new Buffer(1) : this._buffer;
     buf.writeUInt8(!byte || byte < 0 ? 0 : byte, options.insert ? 0 : this.index);
     if (options.insert) {
       this.insert(buf);
@@ -128,7 +129,7 @@ export class ByteList {
 
   public writeInt16(int16: number, options: any = {}) {
     this.prepareBuffer(2);
-    const buf = options.insert ? new Buffer(2) : this.buffer;
+    const buf = options.insert ? new Buffer(2) : this._buffer;
     if (this.useLittleEndian) {
       buf.writeInt16LE(!int16 ? 0 : int16, options.insert ? 0 : this.index);
     } else {
@@ -144,7 +145,7 @@ export class ByteList {
 
   public writeInt32(int32: number, options: any = {}) {
     this.prepareBuffer(4);
-    const buf = options.insert ? new Buffer(4) : this.buffer;
+    const buf = options.insert ? new Buffer(4) : this._buffer;
     if (this.useLittleEndian) {
       buf.writeInt32LE(!int32 ? 0 : int32, options.insert ? 0 : this.index);
     } else {
@@ -160,7 +161,7 @@ export class ByteList {
 
   public writeUInt16(uint16: number, options: any = {}) {
     this.prepareBuffer(2);
-    const buf = options.insert ? new Buffer(2) : this.buffer;
+    const buf = options.insert ? new Buffer(2) : this._buffer;
     if (this.useLittleEndian) {
       buf.writeUInt16LE(!uint16 ? 0 : uint16, options.insert ? 0 : this.index);
     } else {
@@ -176,7 +177,7 @@ export class ByteList {
 
   public writeUInt32(uint32: number, options: any = {}) {
     this.prepareBuffer(4);
-    const buf = options.insert ? new Buffer(4) : this.buffer;
+    const buf = options.insert ? new Buffer(4) : this._buffer;
     if (this.useLittleEndian) {
       buf.writeUInt32LE(!uint32 ? 0 : uint32, options.insert ? 0 : this.index);
     } else {
@@ -192,7 +193,7 @@ export class ByteList {
 
   public writeFloat(float: number, options: any = {}) {
     this.prepareBuffer(8);
-    const buf = options.insert ? new Buffer(8) : this.buffer;
+    const buf = options.insert ? new Buffer(8) : this._buffer;
     if (this.useLittleEndian) {
       buf.writeFloatLE(!float ? 0 : float, options.insert ? 0 : this.index);
     } else {
@@ -208,7 +209,7 @@ export class ByteList {
 
   public writeDouble(double: number, options: any = {}) {
     this.prepareBuffer(8);
-    const buf = options.insert ? new Buffer(8) : this.buffer;
+    const buf = options.insert ? new Buffer(8) : this._buffer;
     if (this.useLittleEndian) {
       buf.writeDoubleLE(!double ? 0 : double, options.insert ? 0 : this.index);
     } else {
@@ -224,7 +225,7 @@ export class ByteList {
 
   public writeDate(date: Date, options: any = {}) {
     this.prepareBuffer(6);
-    const buffer = options.insert ? new Buffer(6) : this.buffer;
+    const buffer = options.insert ? new Buffer(6) : this._buffer;
     buffer.writeInt8(!date ? 0 : date.getUTCFullYear() - 2000, 0);
     buffer.writeInt8(!date ? 0 : date.getUTCMonth(), 1);
     buffer.writeInt8(!date ? 0 : date.getUTCDate(), 2);
@@ -307,8 +308,8 @@ export class ByteList {
   }
 
   public trimLeft(count: number) {
-    const bytes = this.buffer.slice(0, count);
-    this.buffer = this.buffer.slice(count, this.buffer.length);
+    const bytes = this._buffer.slice(0, count);
+    this._buffer = this._buffer.slice(count, this._buffer.length);
     this.index = this.index - count;
     if (this.index < 0) {
       this.index = 0;
@@ -335,7 +336,7 @@ export class ByteList {
     if (this.length < this.index + 1) {
       throw new Error('Buffer Overrun');
     }
-    const byte = this.buffer.readUInt8(this.index);
+    const byte = this._buffer.readUInt8(this.index);
     this.index++;
     return byte;
   }
@@ -344,7 +345,7 @@ export class ByteList {
     if (this.length < this.index + 1) {
       throw new Error('Buffer Overrun');
     }
-    const byte = this.buffer.readInt8(this.index);
+    const byte = this._buffer.readInt8(this.index);
     this.index++;
     return byte;
   }
@@ -357,7 +358,7 @@ export class ByteList {
     if (this.length < this.index + 2) {
       throw new Error('Buffer Overrun');
     }
-    const val = this.useLittleEndian ? this.buffer.readInt16LE(this.index) : this.buffer.readInt16BE(this.index);
+    const val = this.useLittleEndian ? this._buffer.readInt16LE(this.index) : this._buffer.readInt16BE(this.index);
     this.index += 2;
     return val;
   }
@@ -366,7 +367,7 @@ export class ByteList {
     if (this.length < this.index + 4) {
       throw new Error('Buffer Overrun');
     }
-    const val = this.useLittleEndian ? this.buffer.readInt32LE(this.index) : this.buffer.readInt32BE(this.index);
+    const val = this.useLittleEndian ? this._buffer.readInt32LE(this.index) : this._buffer.readInt32BE(this.index);
     this.index += 4;
     return val;
   }
@@ -375,7 +376,7 @@ export class ByteList {
     if (this.length < this.index + 2) {
       throw new Error('Buffer Overrun');
     }
-    const val = this.useLittleEndian ? this.buffer.readUInt16LE(this.index) : this.buffer.readUInt16BE(this.index);
+    const val = this.useLittleEndian ? this._buffer.readUInt16LE(this.index) : this._buffer.readUInt16BE(this.index);
     this.index += 2;
     return val;
   }
@@ -384,7 +385,7 @@ export class ByteList {
     if (this.length < this.index + 4) {
       throw new Error('Buffer Overrun');
     }
-    const val = this.useLittleEndian ? this.buffer.readUInt32LE(this.index) : this.buffer.readUInt32BE(this.index);
+    const val = this.useLittleEndian ? this._buffer.readUInt32LE(this.index) : this._buffer.readUInt32BE(this.index);
     this.index += 4;
     return val;
   }
@@ -393,7 +394,7 @@ export class ByteList {
     if (this.length < this.index + 8) {
       throw new Error('Buffer Overrun');
     }
-    const val = this.useLittleEndian ? this.buffer.readFloatLE(this.index) : this.buffer.readFloatBE(this.index);
+    const val = this.useLittleEndian ? this._buffer.readFloatLE(this.index) : this._buffer.readFloatBE(this.index);
     this.index += 8;
     return val;
   }
@@ -402,7 +403,7 @@ export class ByteList {
     if (this.length < this.index + 8) {
       throw new Error('Buffer Overrun');
     }
-    const val = this.useLittleEndian ? this.buffer.readDoubleLE(this.index) : this.buffer.readDoubleBE(this.index);
+    const val = this.useLittleEndian ? this._buffer.readDoubleLE(this.index) : this._buffer.readDoubleBE(this.index);
     this.index += 8;
     return val;
   }
@@ -422,7 +423,7 @@ export class ByteList {
   }
 
   public readBytes(count: number) {
-    const bytes = this.buffer.slice(this.index, this.index + count);
+    const bytes = this._buffer.slice(this.index, this.index + count);
     this.index += count;
     return bytes;
   }
@@ -437,7 +438,7 @@ export class ByteList {
       throw new Error('Buffer Overrun');
     }
 
-    const str = this.buffer.toString('utf-8', this.index, this.index + length);
+    const str = this._buffer.toString('utf-8', this.index, this.index + length);
     this.index += length;
     return str;
   }
@@ -484,16 +485,16 @@ export class ByteList {
 
   public toString() {
     let str = '';
-    for (const byte of (this.buffer as any)) {
+    for (const byte of (this._buffer as any)) {
       str += byte.toString(16).toUpperCase() + ' ';
     }
     return str;
   }
 
   private prepareBuffer(length: number) {
-    const spaceLeft = this.buffer.length - this.length;
+    const spaceLeft = this._buffer.length - this.length;
     if (length > spaceLeft) {
-      this.buffer = Buffer.concat([this.buffer, new Buffer(this._paddingSize + length)], this.buffer.length + this._paddingSize + length);
+      this._buffer = Buffer.concat([this._buffer, new Buffer(this._paddingSize + length)], this._buffer.length + this._paddingSize + length);
     }
   }
 
