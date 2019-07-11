@@ -48,7 +48,6 @@ export class ByteList {
 
   constructor(bytes?: any) {
 
-    const type: any = typeof bytes;
     if (!bytes) {
       this.buffer = new Buffer(0);
     } else if (typeof bytes === 'string') {
