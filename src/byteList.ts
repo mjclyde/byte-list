@@ -74,7 +74,7 @@ export class ByteList {
     }
     this.prepareBuffer(buffer.length);
     for (let i = 0; i < buffer.length; i++) {
-      if (this.index === this._length - 1) {
+      if (this.index === this._length) {
         this.index++;
       }
       this._buffer.writeUInt8(buffer[i], this._length++);
