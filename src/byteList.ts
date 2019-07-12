@@ -57,6 +57,7 @@ export class ByteList {
     } else if (bytes) {
       this.concat(bytes);
     }
+    this.index = 0;
   }
 
   public getBuffer() {
