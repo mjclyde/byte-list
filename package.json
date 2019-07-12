@@ -1,6 +1,6 @@
 {
   "name": "byte-list",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Easy to use byte serialization/deserialization",
   "main": "dist/byteList.js",
   "types": "dist/byteList.d.ts",
