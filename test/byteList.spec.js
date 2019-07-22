@@ -304,6 +304,22 @@ describe('ByteList', () => {
       assert.isOk(c.readDate());
     });
 
+    it('Should be able to write date after other data', () => {
+      const a = new ByteList();
+      a.writeByte(1);
+      a.writeByte(2);
+      a.writeByte(3);
+      a.writeByte(4);
+      const date = new Date();
+      a.writeDate(date);
+      a.index = 0;
+      assert.equal(a.readByte(), 1);
+      assert.equal(a.readByte(), 2);
+      assert.equal(a.readByte(), 3);
+      assert.equal(a.readByte(), 4);
+      assert.equal(Math.floor(date.getTime() / 1000), Math.floor(a.readDate().getTime() / 1000));
+    });
+
     it('should writeString()', () => {
       const str1 = 'hello world';
       const str2 = 'good bye world';

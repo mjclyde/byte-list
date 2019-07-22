@@ -230,17 +230,16 @@ export class ByteList {
   public writeDate(date: Date, options: any = {}) {
     this.prepareBuffer(6);
     const buffer = options.insert ? new Buffer(6) : this._buffer;
-    buffer.writeInt8(!date ? 0 : date.getUTCFullYear() - 2000, 0);
-    buffer.writeInt8(!date ? 0 : date.getUTCMonth(), 1);
-    buffer.writeInt8(!date ? 0 : date.getUTCDate(), 2);
-    buffer.writeInt8(!date ? 0 : date.getUTCHours(), 3);
-    buffer.writeInt8(!date ? 0 : date.getUTCMinutes(), 4);
-    buffer.writeInt8(!date ? 0 : date.getUTCSeconds(), 5);
+    buffer.writeUInt8(!date ? 0 : date.getUTCFullYear() - 2000, options.insert ? 0 : this.index++);
+    buffer.writeUInt8(!date ? 0 : date.getUTCMonth(), options.insert ? 1 : this.index++);
+    buffer.writeUInt8(!date ? 0 : date.getUTCDate(), options.insert ? 2 : this.index++);
+    buffer.writeUInt8(!date ? 0 : date.getUTCHours(), options.insert ? 3 : this.index++);
+    buffer.writeUInt8(!date ? 0 : date.getUTCMinutes(), options.insert ? 4 : this.index++);
+    buffer.writeUInt8(!date ? 0 : date.getUTCSeconds(), options.insert ? 5 : this.index++);
 
     if (options.insert) {
       this.insert(buffer);
     } else {
-      this.index += 6;
       this._length += 6;
     }
   }
@@ -414,7 +413,7 @@ export class ByteList {
 
   public readDate(): Date | null {
     try {
-      const year = this.readInt8() + 2000;
+      const year = this.readByte() + 2000;
       const month = this.readByte();
       const day = this.readByte();
       const hour = this.readByte();
