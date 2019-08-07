@@ -426,6 +426,10 @@ export class ByteList {
   }
 
   public readBytes(count: number) {
+    if (this.length < this.index + count) {
+      throw new Error('Buffer Overrun');
+    }
+
     const bytes = this._buffer.slice(this.index, this.index + count);
     this.index += count;
     return bytes;

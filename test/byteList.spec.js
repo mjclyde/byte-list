@@ -416,6 +416,15 @@ describe('ByteList', () => {
       });
     });
 
+    it('Should throw overrun for bytes', () => {
+      const bytes = new ByteList([1, 1, 1, 1]);
+      bytes.index = 0;
+      assert.equal(bytes.readBytes(4).length, 4);
+      assert.throws(() => {
+        bytes.readBytes(1);
+      });
+    });
+
     it('Should throw overrun for bool', () => {
       const bytes = new ByteList([1]);
       bytes.index = 0;
