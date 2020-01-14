@@ -530,4 +530,21 @@ describe('ByteList', () => {
 
   });
 
+  describe('ArrayBuffers', () => {
+
+    it('Should be able to initialize from an ArrayBuffer', () => {
+      const buffer = new ArrayBuffer(8);
+      const view = new Uint8Array(buffer);
+      for (let i = 0; i < 8; i++) {
+        view[i] = i;
+      }
+      const byteList = new ByteList(buffer);
+      byteList.index = 0;
+      for (let i = 0; i < 8; i++) {
+        assert.equal(byteList.readByte(), view[i]);
+      }
+    });
+
+  });
+
 });
