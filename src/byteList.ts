@@ -1,4 +1,4 @@
-import { forEach, padEnd, isString } from 'lodash';
+import { forEach, padEnd, isString, trim } from 'lodash';
 const Buffer = require('buffer/').Buffer;
 
 export enum DataTypes {
@@ -314,7 +314,7 @@ export class ByteList {
 
   public trimLeft(count: number) {
     const bytes = this._buffer.slice(0, count);
-    this._buffer = this._buffer.slice(count, this._buffer.length);
+    this._buffer = new Buffer(this._buffer.slice(count, this._buffer.length));
     this.index = this.index - count;
     if (this.index < 0) {
       this.index = 0;
@@ -447,7 +447,7 @@ export class ByteList {
       throw new Error('Buffer Overrun');
     }
 
-    const str = this._buffer.toString('utf-8', this.index, this.index + length);
+    const str = trim(this._buffer.toString('utf-8', this.index, this.index + length), '\0');
     this.index += length;
     return str;
   }

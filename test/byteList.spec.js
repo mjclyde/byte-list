@@ -344,7 +344,7 @@ describe('ByteList', () => {
       const d = new ByteList();
       d.writeString('123', {length: 7});
       d.index = 0;
-      assert.equal(d.readString({length: 7}), '123\0\0\0\0');
+      assert.equal(d.readString({length: 7}), '123');
 
       const e = new ByteList();
       e.writeString('123456789', {length: 5});
@@ -352,7 +352,6 @@ describe('ByteList', () => {
       e.index = 0;
       assert.equal(e.readString({length: 5}), '12345');
       assert.equal(e.readString({length: 3}), '987');
-
     });
 
     it('should writeByteArray()', () => {
@@ -384,7 +383,9 @@ describe('ByteList', () => {
 
     it('should trimLeft()', () => {
       const bytes = new ByteList([1, 2, 3, 4]);
+      console.log(bytes.getBuffer());
       bytes.trimLeft(1);
+      console.log(bytes.getBuffer());
       bytes.index = 0;
       assert.equal(bytes.peekByte(), 2);
 
@@ -543,6 +544,19 @@ describe('ByteList', () => {
       for (let i = 0; i < 8; i++) {
         assert.equal(byteList.readByte(), view[i]);
       }
+    });
+
+  });
+
+  describe('Fixed Length Strings', () => {
+
+    it('Should be able to write a fixed length string', () => {
+      const bytes = new ByteList();
+      bytes.writeString("Matt's Test", {length: 24});
+      console.log(bytes);
+      bytes.index = 0;
+      const str = bytes.readString({length: 24});
+      assert.equal(str, "Matt's Test");
     });
 
   });
