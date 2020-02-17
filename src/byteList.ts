@@ -248,11 +248,11 @@ export class ByteList {
 
   public writeString(str: string = '', options: { insert?: boolean, length?: number } = {}) {
     if (!options.length) {
-      const buf = new Buffer(str, 'utf-8');
+      const buf = new Buffer(str, 'ascii');
       this.writeUInt16(buf.length, options);
       this.concat(buf);
     } else {
-      const buf = new Buffer(str.length > options.length ? str.substr(0, options.length) : str, 'utf-8');
+      const buf = new Buffer(str.length > options.length ? str.substr(0, options.length) : str, 'ascii');
       console.log(buf);
       this.concat(buf);
       for (let i = 0; i < options.length - str.length; i++) {
@@ -449,7 +449,7 @@ export class ByteList {
       throw new Error('Buffer Overrun');
     }
 
-    const str = trim(this._buffer.toString('utf-8', this.index, this.index + length), '\0');
+    const str = trim(this._buffer.toString('ascii', this.index, this.index + length), '\0');
     this.index += length;
     return str;
   }
