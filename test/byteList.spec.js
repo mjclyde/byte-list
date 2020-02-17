@@ -328,14 +328,6 @@ describe('ByteList', () => {
       b.index = 0;
       assert.equal(b.readString(), str1);
 
-      b.useLittleEndian = false;
-      b.index = 0;
-      b.writeString(str2, {
-        insert: true
-      });
-      b.index = 0;
-      assert.equal(b.readString(), str2);
-
       const c = new ByteList();
       c.writeString();
       c.index = 0;
@@ -553,7 +545,6 @@ describe('ByteList', () => {
     it('Should be able to write a fixed length string', () => {
       const bytes = new ByteList();
       bytes.writeString("Matt's Test", {length: 24});
-      console.log(bytes);
       bytes.index = 0;
       const str = bytes.readString({length: 24});
       assert.equal(str, "Matt's Test");

@@ -247,15 +247,17 @@ export class ByteList {
   }
 
   public writeString(str: string = '', options: { insert?: boolean, length?: number } = {}) {
-    str = !options.length ? str : (str.length > options.length ? str.substr(0, options.length) : padEnd(str, options.length, '\0'));
-    const buf = new Buffer(str, 'utf-8');
     if (!options.length) {
+      const buf = new Buffer(str, 'utf-8');
       this.writeUInt16(buf.length, options);
-    }
-    if (options.insert) {
-      this.insert(buf);
-    } else {
       this.concat(buf);
+    } else {
+      const buf = new Buffer(str.length > options.length ? str.substr(0, options.length) : str, 'utf-8');
+      console.log(buf);
+      this.concat(buf);
+      for (let i = 0; i < options.length - str.length; i++) {
+        this.writeByte(0);
+      }
     }
   }
 
