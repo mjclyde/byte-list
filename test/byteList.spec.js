@@ -24,7 +24,7 @@ describe('ByteList', () => {
     });
 
     it('param = Buffer', () => {
-      const bytes = new ByteList(new Buffer([1, 2, 3, 4, 5]));
+      const bytes = new ByteList(Buffer.from([1, 2, 3, 4, 5]));
       assert.isOk(bytes);
       assert.isOk(bytes.getBuffer());
       assert.equal(bytes.length, 5);
@@ -32,7 +32,7 @@ describe('ByteList', () => {
     });
 
     it('param = Buffer', () => {
-      const bytes = new ByteList(new Buffer([1, 2, 3, 4, 5]));
+      const bytes = new ByteList(Buffer.from([1, 2, 3, 4, 5]));
       assert.isOk(bytes);
       assert.isOk(bytes.getBuffer());
       assert.equal(bytes.length, 5);
@@ -53,7 +53,7 @@ describe('ByteList', () => {
 
     it('should concat()', () => {
       const bytes = new ByteList([1, 2]);
-      bytes.concat(new Buffer([3, 4]));
+      bytes.concat(Buffer.from([3, 4]));
       bytes.index = 0;
       assert.equal(bytes.readByte(), 1);
       assert.equal(bytes.readByte(), 2);
@@ -75,7 +75,7 @@ describe('ByteList', () => {
     it('should concat() with index not at the end', () => {
       const bytes = new ByteList([1, 2]);
       bytes.index = 0;
-      bytes.concat(new Buffer([3, 4]));
+      bytes.concat(Buffer.from([3, 4]));
       bytes.index = 0;
       assert.equal(bytes.readByte(), 1);
       assert.equal(bytes.readByte(), 2);
@@ -86,7 +86,7 @@ describe('ByteList', () => {
     it('should insert()', () => {
       const bytes = new ByteList([1, 2]);
       bytes.index = 1;
-      bytes.insert(new Buffer([3, 4]));
+      bytes.insert(Buffer.from([3, 4]));
       bytes.index = 0;
       assert.equal(bytes.readByte(), 1);
       assert.equal(bytes.readByte(), 3);
