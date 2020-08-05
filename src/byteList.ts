@@ -51,7 +51,7 @@ export class ByteList {
   constructor(bytes?: any) {
     this.index = 0;
     this._length = 0;
-    this._buffer = new Buffer(this._paddingSize);
+    this._buffer = Buffer.alloc(this._paddingSize);
     if (isString(bytes)) {
       this.writeString(bytes);
     } else if (bytes) {
@@ -61,7 +61,7 @@ export class ByteList {
   }
 
   public getBuffer() {
-    return new Buffer(this._buffer.buffer, 0, this._length);
+    return Buffer.from(this._buffer.buffer, 0, this._length);
   }
 
   public getLength() {
@@ -119,7 +119,7 @@ export class ByteList {
       byte = byte.charCodeAt(0);
     }
     this.prepareBuffer(1);
-    const buf = options.insert ? new Buffer(1) : this._buffer;
+    const buf = options.insert ? Buffer.alloc(1) : this._buffer;
     buf.writeUInt8(!byte || byte < 0 ? 0 : byte, options.insert ? 0 : this.index);
     if (options.insert) {
       this.insert(buf);
@@ -135,7 +135,7 @@ export class ByteList {
 
   public writeInt16(int16: number, options: any = {}) {
     this.prepareBuffer(2);
-    const buf = options.insert ? new Buffer(2) : this._buffer;
+    const buf = options.insert ? Buffer.alloc(2) : this._buffer;
     if (this.useLittleEndian) {
       buf.writeInt16LE(!int16 ? 0 : int16, options.insert ? 0 : this.index);
     } else {
@@ -151,7 +151,7 @@ export class ByteList {
 
   public writeInt32(int32: number, options: any = {}) {
     this.prepareBuffer(4);
-    const buf = options.insert ? new Buffer(4) : this._buffer;
+    const buf = options.insert ? Buffer.alloc(4) : this._buffer;
     if (this.useLittleEndian) {
       buf.writeInt32LE(!int32 ? 0 : int32, options.insert ? 0 : this.index);
     } else {
@@ -167,7 +167,7 @@ export class ByteList {
 
   public writeUInt16(uint16: number, options: any = {}) {
     this.prepareBuffer(2);
-    const buf = options.insert ? new Buffer(2) : this._buffer;
+    const buf = options.insert ? Buffer.alloc(2) : this._buffer;
     if (this.useLittleEndian) {
       buf.writeUInt16LE(!uint16 ? 0 : uint16, options.insert ? 0 : this.index);
     } else {
@@ -183,7 +183,7 @@ export class ByteList {
 
   public writeUInt32(uint32: number, options: any = {}) {
     this.prepareBuffer(4);
-    const buf = options.insert ? new Buffer(4) : this._buffer;
+    const buf = options.insert ? Buffer.alloc(4) : this._buffer;
     if (this.useLittleEndian) {
       buf.writeUInt32LE(!uint32 ? 0 : uint32, options.insert ? 0 : this.index);
     } else {
@@ -199,7 +199,7 @@ export class ByteList {
 
   public writeFloat(float: number, options: any = {}) {
     this.prepareBuffer(8);
-    const buf = options.insert ? new Buffer(8) : this._buffer;
+    const buf = options.insert ? Buffer.alloc(8) : this._buffer;
     if (this.useLittleEndian) {
       buf.writeFloatLE(!float ? 0 : float, options.insert ? 0 : this.index);
     } else {
@@ -215,7 +215,7 @@ export class ByteList {
 
   public writeDouble(double: number, options: any = {}) {
     this.prepareBuffer(8);
-    const buf = options.insert ? new Buffer(8) : this._buffer;
+    const buf = options.insert ? Buffer.alloc(8) : this._buffer;
     if (this.useLittleEndian) {
       buf.writeDoubleLE(!double ? 0 : double, options.insert ? 0 : this.index);
     } else {
@@ -231,7 +231,7 @@ export class ByteList {
 
   public writeDate(date: Date, options: any = {}) {
     this.prepareBuffer(6);
-    const buffer = options.insert ? new Buffer(6) : this._buffer;
+    const buffer = options.insert ? Buffer.alloc(6) : this._buffer;
     buffer.writeUInt8(!date ? 0 : date.getUTCFullYear() - 2000, options.insert ? 0 : this.index++);
     buffer.writeUInt8(!date ? 0 : date.getUTCMonth(), options.insert ? 1 : this.index++);
     buffer.writeUInt8(!date ? 0 : date.getUTCDate(), options.insert ? 2 : this.index++);
@@ -248,11 +248,11 @@ export class ByteList {
 
   public writeString(str: string = '', options: { insert?: boolean, length?: number } = {}) {
     if (!options.length) {
-      const buf = new Buffer(str, 'ascii');
+      const buf = Buffer.from(str, 'ascii');
       this.writeUInt16(buf.length, options);
       this.concat(buf);
     } else {
-      const buf = new Buffer(str.length > options.length ? str.substr(0, options.length) : str, 'ascii');
+      const buf = Buffer.from(str.length > options.length ? str.substr(0, options.length) : str, 'ascii');
       console.log(buf);
       this.concat(buf);
       for (let i = 0; i < options.length - str.length; i++) {
@@ -316,7 +316,7 @@ export class ByteList {
 
   public trimLeft(count: number) {
     const bytes = this._buffer.slice(0, count);
-    this._buffer = new Buffer(this._buffer.slice(count, this._buffer.length));
+    this._buffer = Buffer.from(this._buffer.slice(count, this._buffer.length));
     this.index = this.index - count;
     if (this.index < 0) {
       this.index = 0;
@@ -505,7 +505,7 @@ export class ByteList {
   private prepareBuffer(length: number) {
     const spaceLeft = this._buffer.length - this.length;
     if (length > spaceLeft) {
-      this._buffer = Buffer.concat([this._buffer, new Buffer(this._paddingSize + length)], this._buffer.length + this._paddingSize + length);
+      this._buffer = Buffer.concat([this._buffer, Buffer.alloc(this._paddingSize + length)], this._buffer.length + this._paddingSize + length);
     }
   }
 
