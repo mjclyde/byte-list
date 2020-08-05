@@ -1,6 +1,6 @@
 # ByteList
 
-[![Build Status](https://travis-ci.org/mjclyde/byte-list.svg?branch=master)](https://travis-ci.org/mjclyde/byte-list)
+![Node.js CI](https://github.com/mjclyde/byte-list/workflows/Node.js%20CI/badge.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/mjclyde/byte-list/badge.svg?branch=master)](https://coveralls.io/github/mjclyde/byte-list?branch=master)
 
 ```sh
