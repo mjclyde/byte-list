@@ -1,9 +1,10 @@
 {
   "name": "byte-list",
-  "version": "2.1.5",
+  "version": "3.1.5",
   "description": "Easy to use byte serialization/deserialization",
   "main": "dist/byteList.js",
   "types": "dist/byteList.d.ts",
+  "sideEffects": false,
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",

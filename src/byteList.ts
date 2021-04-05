@@ -1,5 +1,5 @@
-import { forEach, padEnd, isString, trim } from 'lodash';
-const Buffer = require('buffer/').Buffer;
+import { forEach, isString, trim } from 'lodash';
+import { Buffer } from 'buffer';
 
 export enum DataTypes {
   BYTE,
