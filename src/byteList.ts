@@ -1,4 +1,3 @@
-import { forEach, isString, trim } from 'lodash';
 import { Buffer } from 'buffer';
 
 export enum DataTypes {
@@ -52,8 +51,8 @@ export class ByteList {
     this.index = 0;
     this._length = 0;
     this._buffer = Buffer.alloc(this._paddingSize);
-    if (isString(bytes)) {
-      this.writeString(bytes);
+    if (typeof bytes === 'string' || bytes instanceof String) {
+      this.writeString(bytes as string);
     } else if (bytes) {
       this.concat(bytes);
     }
@@ -263,10 +262,8 @@ export class ByteList {
 
   public writeByteArray(list, options) {
     this.writeByte(list ? list.length : 0, options);
-    forEach(list, (l) => {
-      list.forEach((l) => {
-        this.writeByte(l, options);
-      });
+    (list || []).forEach((l) => {
+      this.writeByte(l, options);
     });
   }
 
@@ -449,7 +446,7 @@ export class ByteList {
       throw new Error('Buffer Overrun');
     }
 
-    const str = trim(this._buffer.toString('ascii', this.index, this.index + length), '\0');
+    const str = this._buffer.toString('ascii', this.index, this.index + length).replace(/\0/g, '');
     this.index += length;
     return str;
   }

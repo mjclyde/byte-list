@@ -6,12 +6,12 @@
     "declaration": true,
     "outDir": "./dist",
     "noImplicitAny": false,
-    "types": ["node"],
+    "types": ["node", "mocha"],
     "skipLibCheck": true,
     "strict": true,
     "downlevelIteration": true,
   },
   "include": [
-    "./src/**/*.ts"
+    "./src/**/*.ts",
   ]
 }

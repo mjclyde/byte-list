@@ -1,7 +1,7 @@
 /* Created by mclyde on 12/29/2017 */
-const assert = require('chai').assert;
-const ByteList = require('../dist/byteList').ByteList;
-const _ = require('lodash');
+import { assert } from 'chai';
+import { ByteList } from '../src/byteList';
+import * as _ from 'lodash';
 
 describe('ByteList', () => {
 
@@ -153,7 +153,7 @@ describe('ByteList', () => {
       b.writeBool(true);
       b.writeBool(false);
       b.writeBool(true);
-      b.writeBool();
+      b.writeBool(false);
       b.index = 0;
       assert(b.readBool());
       assert(!b.readBool());
@@ -176,7 +176,7 @@ describe('ByteList', () => {
       assert.equal(b.readInt16(), 0x0304);
 
       const c = new ByteList();
-      c.writeInt16();
+      c.writeInt16(0);
       c.index = 0;
       assert.equal(c.readInt16(), 0);
     });
@@ -196,7 +196,7 @@ describe('ByteList', () => {
       assert.equal(b.readInt32(), 0x03040201);
 
       const c = new ByteList();
-      c.writeInt32();
+      c.writeInt32(0);
       c.index = 0;
       assert.equal(c.readInt32(), 0);
     });
@@ -216,7 +216,7 @@ describe('ByteList', () => {
       assert.equal(b.readUInt16(), 0x0304);
 
       const c = new ByteList();
-      c.writeUInt16();
+      c.writeUInt16(0);
       c.index = 0;
       assert.equal(c.readUInt16(), 0);
     });
@@ -236,7 +236,7 @@ describe('ByteList', () => {
       assert.equal(b.readUInt32(), 0xF3040201);
 
       const c = new ByteList();
-      c.writeUInt32();
+      c.writeUInt32(0);
       c.index = 0;
       assert.equal(c.readUInt32(), 0);
     });
@@ -256,7 +256,7 @@ describe('ByteList', () => {
       assert.equal(_.round(b.readFloat(), 3), 123.321);
 
       const c = new ByteList();
-      c.writeFloat();
+      c.writeFloat(0);
       c.index = 0;
       assert.equal(c.readFloat(), 0);
     });
@@ -276,7 +276,7 @@ describe('ByteList', () => {
       assert.equal(_.round(b.readDouble(), 3), 123.321);
 
       const c = new ByteList();
-      c.writeDouble();
+      c.writeDouble(0);
       c.index = 0;
       assert.equal(c.readDouble(), 0);
     });
@@ -288,7 +288,7 @@ describe('ByteList', () => {
       const b = new ByteList();
       b.writeDate(d1);
       b.index = 0;
-      assert.equal(b.readDate().toString(), d1.toString());
+      assert.equal(b.readDate()?.toString(), d1.toString());
 
       b.useLittleEndian = false;
       b.index = 0;
@@ -296,10 +296,10 @@ describe('ByteList', () => {
         insert: true
       });
       b.index = 0;
-      assert.equal(b.readDate().toString(), d2.toString());
+      assert.equal(b.readDate()?.toString(), d2.toString());
 
       const c = new ByteList();
-      c.writeDate();
+      c.writeDate(new Date());
       c.index = 0;
       assert.isOk(c.readDate());
     });
@@ -317,7 +317,7 @@ describe('ByteList', () => {
       assert.equal(a.readByte(), 2);
       assert.equal(a.readByte(), 3);
       assert.equal(a.readByte(), 4);
-      assert.equal(Math.floor(date.getTime() / 1000), Math.floor(a.readDate().getTime() / 1000));
+      assert.equal(Math.floor(date.getTime() / 1000), Math.floor((a.readDate()?.getTime() || 0) / 1000));
     });
 
     it('should writeString()', () => {
@@ -334,16 +334,16 @@ describe('ByteList', () => {
       assert.equal(c.readString(), '');
 
       const d = new ByteList();
-      d.writeString('123', {length: 7});
+      d.writeString('123', { length: 7 });
       d.index = 0;
-      assert.equal(d.readString({length: 7}), '123');
+      assert.equal(d.readString({ length: 7 }), '123');
 
       const e = new ByteList();
-      e.writeString('123456789', {length: 5});
-      e.writeString('987654321', {length: 3});
+      e.writeString('123456789', { length: 5 });
+      e.writeString('987654321', { length: 3 });
       e.index = 0;
-      assert.equal(e.readString({length: 5}), '12345');
-      assert.equal(e.readString({length: 3}), '987');
+      assert.equal(e.readString({ length: 5 }), '12345');
+      assert.equal(e.readString({ length: 3 }), '987');
     });
 
     it('should writeByteArray()', () => {
@@ -357,7 +357,7 @@ describe('ByteList', () => {
       assert.equal(byteArray[3], 4);
 
       const c = new ByteList();
-      c.writeByteArray();
+      c.writeByteArray([], {});
       c.index = 0;
       assert.equal(c.readByteArray().length, 0);
     });
@@ -544,9 +544,9 @@ describe('ByteList', () => {
 
     it('Should be able to write a fixed length string', () => {
       const bytes = new ByteList();
-      bytes.writeString("Matt's Test", {length: 24});
+      bytes.writeString("Matt's Test", { length: 24 });
       bytes.index = 0;
-      const str = bytes.readString({length: 24});
+      const str = bytes.readString({ length: 24 });
       assert.equal(str, "Matt's Test");
     });
 

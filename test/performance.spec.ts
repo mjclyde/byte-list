@@ -1,8 +1,8 @@
 /* Created by mclyde on 7/10/2019 */
-const assert = require('chai').assert;
-const ByteList = require('../dist/byteList').ByteList;
-const _ = require('lodash');
-const Buffer = require('buffer/').Buffer;
+import { assert } from 'chai';
+import { ByteList } from '../src/byteList';
+import * as _ from 'lodash';
+import { Buffer } from 'buffer';
 
 describe('Performance', () => {
 
@@ -19,32 +19,32 @@ describe('Performance', () => {
     assert.equal(bytes.index, 0);
     assert.equal(bytes.buffer.length, 0);
     assert.equal(bytes['_buffer'].length, 100);
-    bytes.concat(new Buffer(1, 1));
+    bytes.concat(Buffer.alloc(1, 1));
     assert.equal(bytes.length, 1);
     assert.equal(bytes.index, 1);
     assert.equal(bytes.buffer.length, 1);
     assert.equal(bytes['_buffer'].length, 100);
-    bytes.concat(new Buffer(3, 1));
+    bytes.concat(Buffer.alloc(3, 1));
     assert.equal(bytes.length, 4);
     assert.equal(bytes.index, 4);
     assert.equal(bytes.buffer.length, 4);
     assert.equal(bytes['_buffer'].length, 100);
-    bytes.concat(new Buffer(1, 1));
+    bytes.concat(Buffer.alloc(1, 1));
     assert.equal(bytes.length, 5);
     assert.equal(bytes.index, 5);
     assert.equal(bytes.buffer.length, 5);
     assert.equal(bytes['_buffer'].length, 100);
-    bytes.concat(new Buffer(100, 1));
+    bytes.concat(Buffer.alloc(100, 1));
     assert.equal(bytes.length, 105);
     assert.equal(bytes.index, 105);
     assert.equal(bytes.buffer.length, 105);
     assert.equal(bytes['_buffer'].length, 300);
-    bytes.concat(new Buffer(100, 1));
+    bytes.concat(Buffer.alloc(100, 1));
     assert.equal(bytes.length, 205);
     assert.equal(bytes.index, 205);
     assert.equal(bytes.buffer.length, 205);
     assert.equal(bytes['_buffer'].length, 300);
-    bytes.concat(new Buffer(100, 1));
+    bytes.concat(Buffer.alloc(100, 1));
     assert.equal(bytes.length, 305);
     assert.equal(bytes.index, 305);
     assert.equal(bytes.buffer.length, 305);

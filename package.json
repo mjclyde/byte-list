@@ -1,17 +1,18 @@
 {
   "name": "byte-list",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "description": "Easy to use byte serialization/deserialization",
-  "main": "dist/byteList.js",
-  "types": "dist/byteList.d.ts",
+  "main": "byteList.js",
+  "types": "byteList.d.ts",
   "sideEffects": false,
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
-    "test": "nyc mocha && nyc report --reporter=text --reporter=html",
+    "test": "TS_NODE_PROJECT='./tsconfig.test.json' nyc mocha --opts mocha.opts && nyc report --reporter=text --reporter=html",
     "test:watch": "mocha -w",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "package": "npm run build && npm publish"
+    "package": "npm run build && cp package.json dist && cd dist && npm pack"
+
   },
   "repository": {
     "type": "git",
@@ -31,15 +32,34 @@
   },
   "homepage": "https://github.com/mjclyde/byte-list#readme",
   "devDependencies": {
+    "@types/mocha": "^8.2.2",
     "@types/node": "^11.9.4",
     "chai": "^4.2.0",
     "coveralls": "^3.0.2",
     "mocha": "^6.0.0",
     "nyc": "^14.1.1",
-    "typescript": "^3.3.3"
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
   },
   "dependencies": {
     "buffer": "^5.2.1",
     "lodash": "^4.17.11"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts",
+      "test/**/*.ts"
+    ],
+    "exclude": [
+      "src/**/*.spec.ts",
+      "test/**/*.spec.ts"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ]
   }
 }
