@@ -1,5 +1,3 @@
-import { Buffer } from 'buffer';
-
 export enum DataTypes {
   BYTE,
   BOOL,
@@ -34,7 +32,6 @@ export class ByteList {
   public index: number;
   public useLittleEndian: boolean = true;
   public get length() { return this._length; }
-  public get buffer() { return this.getBuffer(); }
   public get paddingSize() { return this._paddingSize; }
   public set paddingSize(val: number) {
     this._paddingSize = val;
@@ -57,29 +54,40 @@ export class ByteList {
       this.concat(bytes);
     }
     this.index = 0;
+    return this;
   }
 
   public getBuffer() {
-    return Buffer.from(this._buffer.buffer, 0, this._length);
+    return this._buffer.slice(0, this._length);
   }
 
   public getLength() {
     return this._length;
   }
 
-  public concat(buffer) {
-    if (buffer instanceof ArrayBuffer) {
-      buffer = new Uint8Array(buffer);
-    } else if (buffer && buffer.buffer && buffer.buffer instanceof Uint8Array) {
-      buffer = buffer.buffer;
+  public concat(bytes: ArrayBuffer | Buffer | ByteList) {
+    let length = 0;
+    let buffer: Uint8Array | null = null;
+    if (bytes instanceof ArrayBuffer) {
+      buffer = new Uint8Array(bytes);
+      length = buffer.length;
+    } else if (bytes instanceof ByteList) {
+      buffer = bytes.getBuffer();
+      length = bytes.length;
+    } else if (bytes instanceof Buffer) {
+      buffer = bytes;
+      length = bytes.length;
     }
-    this.prepareBuffer(buffer.length);
-    for (let i = 0; i < buffer.length; i++) {
-      if (this.index === this._length) {
-        this.index++;
+    if (buffer && buffer.length) {
+      this.prepareBuffer(length);
+      for (let i = 0; i < length; i++) {
+        if (this.index === this._length) {
+          this.index++;
+        }
+        this._buffer.writeUInt8(buffer[i], this._length++);
       }
-      this._buffer.writeUInt8(buffer[i], this._length++);
     }
+
   }
 
   public insert(buffer) {
@@ -313,7 +321,7 @@ export class ByteList {
 
   public trimLeft(count: number) {
     const bytes = this._buffer.slice(0, count);
-    this._buffer = Buffer.from(this._buffer.slice(count, this._buffer.length));
+    this._buffer = this._buffer.slice(count, this._buffer.length);
     this.index = this.index - count;
     if (this.index < 0) {
       this.index = 0;
