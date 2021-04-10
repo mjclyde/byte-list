@@ -65,16 +65,16 @@ export class ByteList {
     return this._length;
   }
 
-  public concat(bytes: ArrayBuffer | Buffer | ByteList) {
+  public concat(bytes: ArrayBuffer | Buffer | ByteList | number[]) {
     let length = 0;
-    let buffer: Uint8Array | null = null;
+    let buffer: Uint8Array | number[] | null = null;
     if (bytes instanceof ArrayBuffer) {
       buffer = new Uint8Array(bytes);
       length = buffer.length;
     } else if (bytes instanceof ByteList) {
       buffer = bytes.getBuffer();
       length = bytes.length;
-    } else if (bytes instanceof Buffer) {
+    } else {
       buffer = bytes;
       length = bytes.length;
     }
