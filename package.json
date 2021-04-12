@@ -1,6 +1,6 @@
 {
   "name": "byte-list",
-  "version": "3.1.7",
+  "version": "3.1.8",
   "description": "Easy to use byte serialization/deserialization",
   "main": "byteList.js",
   "types": "byteList.d.ts",
@@ -11,7 +11,8 @@
     "test": "nyc mocha --opts mocha.opts && nyc report --reporter=text --reporter=html",
     "test:watch": "mocha --opts mocha.opts -w",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "package": "npm run build && cp package.json dist && cd dist && npm pack"
+    "package": "npm run build && cp package.json dist && cd dist && npm pack",
+    "deploy": "npm run build && cp package.json dist && cd dist && npm publish"
   },
   "repository": {
     "type": "git",
