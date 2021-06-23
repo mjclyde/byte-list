@@ -84,7 +84,7 @@ export class ByteList {
         if (this.index === this._length) {
           this.index++;
         }
-        this._buffer.writeUInt8(buffer[i], this._length++);
+        this._buffer.writeUInt8(buffer[i] & 0xFF, this._length++);
       }
     }
 
@@ -121,13 +121,25 @@ export class ByteList {
     }
   }
 
+
+  public peekUInt32(offset: number = 0) {
+    if (this.length < this.index + offset + 4) {
+      throw new Error('Buffer Overrun');
+    }
+    if (this.useLittleEndian) {
+      return this._buffer.readUInt32LE(this.index + offset);
+    } else {
+      return this._buffer.readUInt32BE(this.index + offset);
+    }
+  }
+
   public writeByte(byte, options: any = {}) {
     if (typeof byte === 'string' && byte.length === 1) {
       byte = byte.charCodeAt(0);
     }
     this.prepareBuffer(1);
     const buf = options.insert ? Buffer.alloc(1) : this._buffer;
-    buf.writeUInt8(!byte || byte < 0 ? 0 : byte, options.insert ? 0 : this.index);
+    buf.writeUInt8(!byte || byte < 0 ? 0 : byte & 0xFF, options.insert ? 0 : this.index);
     if (options.insert) {
       this.insert(buf);
     } else {
@@ -144,9 +156,9 @@ export class ByteList {
     this.prepareBuffer(2);
     const buf = options.insert ? Buffer.alloc(2) : this._buffer;
     if (this.useLittleEndian) {
-      buf.writeInt16LE(!int16 ? 0 : int16, options.insert ? 0 : this.index);
+      buf.writeInt16LE(!int16 ? 0 : int16 & 0xFFFF, options.insert ? 0 : this.index);
     } else {
-      buf.writeInt16BE(!int16 ? 0 : int16, options.insert ? 0 : this.index);
+      buf.writeInt16BE(!int16 ? 0 : int16 & 0xFFFF, options.insert ? 0 : this.index);
     }
     if (options.insert) {
       this.insert(buf);
@@ -160,9 +172,9 @@ export class ByteList {
     this.prepareBuffer(4);
     const buf = options.insert ? Buffer.alloc(4) : this._buffer;
     if (this.useLittleEndian) {
-      buf.writeInt32LE(!int32 ? 0 : int32, options.insert ? 0 : this.index);
+      buf.writeInt32LE(!int32 ? 0 : (int32 & 0xFFFFFFFF) >>> 0, options.insert ? 0 : this.index);
     } else {
-      buf.writeInt32BE(!int32 ? 0 : int32, options.insert ? 0 : this.index);
+      buf.writeInt32BE(!int32 ? 0 : (int32 & 0xFFFFFFFF) >>> 0, options.insert ? 0 : this.index);
     }
     if (options.insert) {
       this.insert(buf);
@@ -176,9 +188,9 @@ export class ByteList {
     this.prepareBuffer(2);
     const buf = options.insert ? Buffer.alloc(2) : this._buffer;
     if (this.useLittleEndian) {
-      buf.writeUInt16LE(!uint16 ? 0 : uint16, options.insert ? 0 : this.index);
+      buf.writeUInt16LE(!uint16 ? 0 : uint16 & 0xFFFF, options.insert ? 0 : this.index);
     } else {
-      buf.writeUInt16BE(!uint16 ? 0 : uint16, options.insert ? 0 : this.index);
+      buf.writeUInt16BE(!uint16 ? 0 : uint16 & 0xFFFF, options.insert ? 0 : this.index);
     }
     if (options.insert) {
       this.insert(buf);
@@ -192,9 +204,9 @@ export class ByteList {
     this.prepareBuffer(4);
     const buf = options.insert ? Buffer.alloc(4) : this._buffer;
     if (this.useLittleEndian) {
-      buf.writeUInt32LE(!uint32 ? 0 : uint32, options.insert ? 0 : this.index);
+      buf.writeUInt32LE(!uint32 ? 0 : (uint32 & 0xFFFFFFFF) >>> 0, options.insert ? 0 : this.index);
     } else {
-      buf.writeUInt32BE(!uint32 ? 0 : uint32, options.insert ? 0 : this.index);
+      buf.writeUInt32BE(!uint32 ? 0 : (uint32 & 0xFFFFFFFF) >>> 0, options.insert ? 0 : this.index);
     }
     if (options.insert) {
       this.insert(buf);
@@ -239,12 +251,12 @@ export class ByteList {
   public writeDate(date: Date, options: any = {}) {
     this.prepareBuffer(6);
     const buffer = options.insert ? Buffer.alloc(6) : this._buffer;
-    buffer.writeUInt8(!date ? 0 : date.getUTCFullYear() - 2000, options.insert ? 0 : this.index++);
-    buffer.writeUInt8(!date ? 0 : date.getUTCMonth(), options.insert ? 1 : this.index++);
-    buffer.writeUInt8(!date ? 0 : date.getUTCDate(), options.insert ? 2 : this.index++);
-    buffer.writeUInt8(!date ? 0 : date.getUTCHours(), options.insert ? 3 : this.index++);
-    buffer.writeUInt8(!date ? 0 : date.getUTCMinutes(), options.insert ? 4 : this.index++);
-    buffer.writeUInt8(!date ? 0 : date.getUTCSeconds(), options.insert ? 5 : this.index++);
+    buffer.writeUInt8(!date ? 0 : (date.getUTCFullYear() - 2000) & 0xFF, options.insert ? 0 : this.index++);
+    buffer.writeUInt8(!date ? 0 : date.getUTCMonth() & 0xFF, options.insert ? 1 : this.index++);
+    buffer.writeUInt8(!date ? 0 : date.getUTCDate() & 0xFF, options.insert ? 2 : this.index++);
+    buffer.writeUInt8(!date ? 0 : date.getUTCHours() & 0xFF, options.insert ? 3 : this.index++);
+    buffer.writeUInt8(!date ? 0 : date.getUTCMinutes() & 0xFF, options.insert ? 4 : this.index++);
+    buffer.writeUInt8(!date ? 0 : date.getUTCSeconds() & 0xFF, options.insert ? 5 : this.index++);
 
     if (options.insert) {
       this.insert(buffer);
