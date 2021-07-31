@@ -92,7 +92,7 @@ export class ByteList {
 
   public insert(buffer) {
     if (buffer instanceof ByteList) {
-      buffer = buffer._buffer;
+      buffer = buffer.getBuffer();
     }
 
     const part1 = this._buffer.slice(0, this.index);

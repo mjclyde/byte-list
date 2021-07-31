@@ -1,4 +1,3 @@
-/* Created by mclyde on 12/29/2017 */
 import { assert } from 'chai';
 import { ByteList } from '../src/byteList';
 import * as _ from 'lodash';
@@ -94,6 +93,19 @@ describe('ByteList', () => {
       assert.equal(bytes.readByte(), 2);
     });
 
+    it('should be able to insert() a ByteList', () => {
+      const bytes = new ByteList([1, 2, 3, 4]);
+      bytes.index = 2;
+      bytes.insert(new ByteList([10, 10]));
+      bytes.index = 0;
+      assert.equal(bytes.readByte(), 1);
+      assert.equal(bytes.readByte(), 2);
+      assert.equal(bytes.readByte(), 10);
+      assert.equal(bytes.readByte(), 10);
+      assert.equal(bytes.readByte(), 3);
+      assert.equal(bytes.readByte(), 4);
+    });
+
     it('should peekByte()', () => {
       assert.throws(() => {
         const bytes = new ByteList();
@@ -118,6 +130,20 @@ describe('ByteList', () => {
       assert.equal(bytes.index, 0);
       bytes.useLittleEndian = false;
       assert.equal(bytes.peekUInt16(), 0x0102);
+    });
+
+    it('should peekUInt32()', () => {
+      assert.throws(() => {
+        const b = new ByteList();
+        b.peekUInt32();
+      });
+
+      const bytes = new ByteList([1, 2, 3, 4]);
+      bytes.index = 0;
+      assert.equal(bytes.peekUInt32(), 0x04030201);
+      assert.equal(bytes.index, 0);
+      bytes.useLittleEndian = false;
+      assert.equal(bytes.peekUInt32(), 0x01020304);
     });
 
     it('should write()', () => {
@@ -550,6 +576,49 @@ describe('ByteList', () => {
       assert.equal(str, "Matt's Test");
     });
 
+  });
+
+  describe('Padding', () => {
+
+    it('Should be able to get the padding size', () => {
+      const bytes = new ByteList();
+      bytes.writeUInt32(123456);
+      assert.isTrue(bytes.paddingSize > 0);
+      assert.equal(bytes['_buffer'].length, bytes.paddingSize);
+    });
+
+    it('Should be able to set the padding size', () => {
+      const bytes = new ByteList();
+      bytes.writeUInt32(123456);
+      assert.isTrue(bytes.paddingSize > 0);
+      assert.equal(bytes['_buffer'].length, bytes.paddingSize);
+      bytes.paddingSize = 10;
+      for (let i = 0; i < 24; i++) {
+        bytes.writeUInt32(i);
+      }
+      assert.equal(bytes.length, 100);
+      assert.equal(bytes['_buffer'].length, 100);
+      bytes.writeByte(1);
+      assert.equal(bytes.length, 101);
+      assert.equal(bytes['_buffer'].length, 111);
+    });
+
+    it('Should not be allowed to set a negative padding size', () => {
+      const bytes = new ByteList();
+      bytes.writeUInt32(123456);
+      assert.isTrue(bytes.paddingSize > 0);
+      bytes.paddingSize = -1;
+      assert.isTrue(bytes.paddingSize >= 0);
+    });
+
+  });
+
+  describe('Misc', () => {
+
+    it('Should be able to call toString()', () => {
+      const bytes = new ByteList();
+
+    })
   });
 
 });

@@ -1,6 +1,6 @@
 {
   "name": "byte-list",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Easy to use byte serialization/deserialization",
   "main": "byteList.js",
   "types": "byteList.d.ts",
@@ -39,10 +39,10 @@
     "mocha": "^6.0.0",
     "nyc": "^14.1.1",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "lodash": "^4.17.11"
   },
   "dependencies": {
-    "lodash": "^4.17.11"
   },
   "nyc": {
     "extension": [
