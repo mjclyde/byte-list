@@ -4,6 +4,49 @@ import * as _ from 'lodash';
 
 describe('ByteList', () => {
 
+  describe('Static Bitwise Operations', () => {
+
+    it('Should be able to set a bit', () => {
+      let number = 0;
+      number = ByteList.SetBit(number, true, 0);
+      assert.equal(number, 1);
+      number = ByteList.SetBit(number, true, 1);
+      assert.equal(number, 3);
+      number = ByteList.SetBit(number, false, 0);
+      assert.equal(number, 2);
+      number = ByteList.SetBit(number, false, 1);
+      number = ByteList.SetBit(number, true, 2);
+      assert.equal(number, 4);
+
+      number = ByteList.SetBit(number, false, 2);
+      assert.equal(number, 0);
+      number = ByteList.SetBit(number, true, 31);
+      assert.equal(number, 2147483648);
+      number = ByteList.SetBit(number, false, 31);
+      assert.equal(number, 0);
+      number = ByteList.SetBit(number, true, 32);
+      assert.equal(number, 0);
+      number = ByteList.SetBit(number, true, -1);
+      assert.equal(number, 0);
+
+    });
+
+    it('Should be able to get a bit', () => {
+      let number = 6;
+      assert.equal(ByteList.GetBit(number, 0), false);
+      assert.equal(ByteList.GetBit(number, 1), true);
+      assert.equal(ByteList.GetBit(number, 2), true);
+
+      number = 0;
+      for (let i=0; i<31; i++) {
+        number = ByteList.SetBit(0, true, i);
+        assert.equal(ByteList.GetBit(number, i), true);
+      }
+      assert.equal(ByteList.GetBit(number, 32), false);
+      assert.equal(ByteList.GetBit(number, -1), false);
+    });
+  });
+
   describe('Constructor', () => {
 
     it('param = Null', () => {
@@ -12,6 +55,8 @@ describe('ByteList', () => {
       assert.isOk(bytes.getBuffer());
       assert.equal(bytes.length, 0);
       assert.equal(bytes.getLength(), 0);
+      assert.equal(bytes.paddingSize, 100);
+      assert.equal(bytes.useLittleEndian, true);
     });
 
     it('param = String', () => {
@@ -521,30 +566,6 @@ describe('ByteList', () => {
       bytes.index = 0;
       const date = bytes.readDate();
       assert.equal(date, null);
-    });
-
-  });
-
-  describe('Bitwise Operation', () => {
-
-    it('Should be able to set a bit', () => {
-      let number = 0;
-      number = ByteList.SetBit(number, true, 0);
-      assert.equal(number, 1);
-      number = ByteList.SetBit(number, true, 1);
-      assert.equal(number, 3);
-      number = ByteList.SetBit(number, false, 0);
-      assert.equal(number, 2);
-      number = ByteList.SetBit(number, false, 1);
-      number = ByteList.SetBit(number, true, 2);
-      assert.equal(number, 4);
-    });
-
-    it('Should be able to get a bit', () => {
-      const number = 6;
-      assert.equal(ByteList.GetBit(number, 0), false);
-      assert.equal(ByteList.GetBit(number, 1), true);
-      assert.equal(ByteList.GetBit(number, 2), true);
     });
 
   });

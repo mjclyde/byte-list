@@ -17,15 +17,21 @@ export enum DataTypes {
 export class ByteList {
 
   public static SetBit(num: number, val: boolean, bit: number): number {
+    if (bit < 0 || bit > 31) {
+      return num >>> 0;
+    }
     if (val) {
       num |= 1 << bit;
     } else {
       num &= ~(1 << bit);
     }
-    return num;
+    return num >>> 0;
   }
 
   public static GetBit(num: number, bit: number): boolean {
+    if (bit < 0 || bit > 31) {
+      return false;
+    }
     return (num & (1 << bit)) != 0
   }
 
