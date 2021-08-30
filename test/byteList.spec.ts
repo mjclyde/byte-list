@@ -31,6 +31,41 @@ describe('ByteList', () => {
 
     });
 
+    describe('Padding', () => {
+
+      it('Should be able to get the padding size', () => {
+        const bytes = new ByteList();
+        bytes.writeUInt32(123456);
+        assert.isTrue(bytes.paddingSize > 0);
+        assert.equal(bytes['_buffer'].length, bytes.paddingSize);
+      });
+
+      it('Should be able to set the padding size', () => {
+        const bytes = new ByteList();
+        bytes.writeUInt32(123456);
+        assert.isTrue(bytes.paddingSize > 0);
+        assert.equal(bytes['_buffer'].length, bytes.paddingSize);
+        bytes.paddingSize = 10;
+        for (let i = 0; i < 24; i++) {
+          bytes.writeUInt32(i);
+        }
+        assert.equal(bytes.length, 100);
+        assert.equal(bytes['_buffer'].length, 100);
+        bytes.writeByte(1);
+        assert.equal(bytes.length, 101);
+        assert.equal(bytes['_buffer'].length, 111);
+      });
+
+      it('Should not be allowed to set a negative padding size', () => {
+        const bytes = new ByteList();
+        bytes.writeUInt32(123456);
+        assert.isTrue(bytes.paddingSize > 0);
+        bytes.paddingSize = -1;
+        assert.isTrue(bytes.paddingSize >= 0);
+      });
+
+    });
+
     it('Should be able to get a bit', () => {
       let number = 6;
       assert.equal(ByteList.GetBit(number, 0), false);
@@ -64,7 +99,6 @@ describe('ByteList', () => {
       assert.isOk(bytes);
       assert.isOk(bytes.getBuffer());
       assert.equal(bytes.length, 7);
-      assert.equal(bytes.getLength(), 7);
     });
 
     it('param = Buffer', () => {
@@ -72,15 +106,14 @@ describe('ByteList', () => {
       assert.isOk(bytes);
       assert.isOk(bytes.getBuffer());
       assert.equal(bytes.length, 5);
-      assert.equal(bytes.getLength(), 5);
     });
 
-    it('param = Buffer', () => {
-      const bytes = new ByteList(Buffer.from([1, 2, 3, 4, 5]));
+    it('param = large Buffer', () => {
+      let buffer = Buffer.alloc(250);
+      const bytes = new ByteList(Buffer.from(buffer));
       assert.isOk(bytes);
       assert.isOk(bytes.getBuffer());
-      assert.equal(bytes.length, 5);
-      assert.equal(bytes.getLength(), 5);
+      assert.equal(bytes.length, 250);
     });
 
     it('param = Array of numbers', () => {
@@ -595,41 +628,6 @@ describe('ByteList', () => {
       bytes.index = 0;
       const str = bytes.readString({ length: 24 });
       assert.equal(str, "Matt's Test");
-    });
-
-  });
-
-  describe('Padding', () => {
-
-    it('Should be able to get the padding size', () => {
-      const bytes = new ByteList();
-      bytes.writeUInt32(123456);
-      assert.isTrue(bytes.paddingSize > 0);
-      assert.equal(bytes['_buffer'].length, bytes.paddingSize);
-    });
-
-    it('Should be able to set the padding size', () => {
-      const bytes = new ByteList();
-      bytes.writeUInt32(123456);
-      assert.isTrue(bytes.paddingSize > 0);
-      assert.equal(bytes['_buffer'].length, bytes.paddingSize);
-      bytes.paddingSize = 10;
-      for (let i = 0; i < 24; i++) {
-        bytes.writeUInt32(i);
-      }
-      assert.equal(bytes.length, 100);
-      assert.equal(bytes['_buffer'].length, 100);
-      bytes.writeByte(1);
-      assert.equal(bytes.length, 101);
-      assert.equal(bytes['_buffer'].length, 111);
-    });
-
-    it('Should not be allowed to set a negative padding size', () => {
-      const bytes = new ByteList();
-      bytes.writeUInt32(123456);
-      assert.isTrue(bytes.paddingSize > 0);
-      bytes.paddingSize = -1;
-      assert.isTrue(bytes.paddingSize >= 0);
     });
 
   });
