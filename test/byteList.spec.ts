@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 import { ByteList } from '../src/byteList';
 import * as _ from 'lodash';
+import createStatsCollector = require("mocha/lib/stats-collector");
 
 describe('ByteList', () => {
 
@@ -109,11 +110,11 @@ describe('ByteList', () => {
     });
 
     it('param = large Buffer', () => {
-      let buffer = Buffer.alloc(250);
+      let buffer = Buffer.alloc(1000);
       const bytes = new ByteList(Buffer.from(buffer));
       assert.isOk(bytes);
       assert.isOk(bytes.getBuffer());
-      assert.equal(bytes.length, 250);
+      assert.equal(bytes.length, 1000);
     });
 
     it('param = Array of numbers', () => {
@@ -124,29 +125,80 @@ describe('ByteList', () => {
       assert.equal(bytes.getLength(), 4);
     });
 
+    it('param = large array of numbers', () => {
+      const testData: number[] = [];
+      for (let i = 1; i <= 1000; i++) {
+        testData.push(i);
+      }
+      const bytes = new ByteList(testData);
+      assert.isOk(bytes);
+      assert.isOk(bytes.getBuffer());
+      assert.equal(bytes.length, 1000);
+      assert.equal(bytes.getLength(), 1000);
+    });
+
+    it('param = strange data type', () => {
+      const testData = { a: "hello", b: "there" }
+      const bytes = new ByteList(testData);
+      assert.isOk(bytes);
+      assert.isOk(bytes.getBuffer());
+      assert.equal(bytes.length, 0);
+      assert.equal(bytes.getLength(), 0);
+    });
+
   });
 
   describe('Functions', () => {
 
-    it('should concat()', () => {
-      const bytes = new ByteList([1, 2]);
-      bytes.concat(Buffer.from([3, 4]));
+    it('should concat(Buffer)', () => {
+      const bytes = new ByteList([0, 1, 2]);
+      bytes.concat(Buffer.from([3, 4, 5, 6, 7, 8, 9]));
+
+      for (let i=0; i<100; i++) {
+        bytes.concat(Buffer.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]));
+      }
+
       bytes.index = 0;
-      assert.equal(bytes.readByte(), 1);
-      assert.equal(bytes.readByte(), 2);
-      assert.equal(bytes.readByte(), 3);
-      assert.equal(bytes.readByte(), 4);
+      for (let i=0; i<101; i++) {
+        for (let j=0; j<10; j++) {
+            assert.equal(bytes.readByte(), j);
+        }
+      }
     });
 
     it('should concat(ByteList)', () => {
-      const bytes = new ByteList([1, 2]);
-      const otherBytes = new ByteList([3, 4])
+      const bytes = new ByteList([0, 1, 2]);
+      const otherBytes = new ByteList([3, 4, 5, 6, 7, 8, 9])
       bytes.concat(otherBytes);
+      for (let i=0; i<100; i++) {
+        bytes.concat(new ByteList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]));
+      }
+
       bytes.index = 0;
-      assert.equal(bytes.readByte(), 1);
-      assert.equal(bytes.readByte(), 2);
-      assert.equal(bytes.readByte(), 3);
-      assert.equal(bytes.readByte(), 4);
+      for (let i=0; i<101; i++) {
+        for (let j=0; j<10; j++) {
+          assert.equal(bytes.readByte(), j);
+        }
+      }
+    });
+
+    it('should concat(ArrayBuffer)', () => {
+      let testData: ArrayBuffer = new ArrayBuffer(10);
+      const view = new Int8Array(testData);
+      for (let i=0; i<10; i++) {
+        view[i] = i;
+      }
+      const bytes = new ByteList(testData);
+      for (let i=0; i<100; i++) {
+        bytes.concat(testData)
+      }
+
+      bytes.index = 0;
+      for (let i=0; i<101; i++) {
+        for (let j=0; j<10; j++) {
+          assert.equal(bytes.readByte(), j);
+        }
+      }
     });
 
     it('should concat() with index not at the end', () => {
