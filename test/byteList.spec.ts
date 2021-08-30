@@ -146,22 +146,44 @@ describe('ByteList', () => {
       assert.equal(bytes.getLength(), 0);
     });
 
+    it('should be independent', () => {
+      let testData: ArrayBuffer = new ArrayBuffer(1000);
+      const view = new Int8Array(testData);
+      for (let i = 0; i < 1000; i++) {
+        view[i] = i & 255;
+      }
+      const byteList1 = new ByteList(testData);
+      byteList1.concat(testData)
+      const byteList2 = new ByteList(testData);
+      byteList2.concat(testData)
+
+      byteList1.index = 1;
+      for (let i = 0; i< 1000; i++) {
+        Buffer.from([255])
+      }
+
+      byteList2.index = 0;
+      for (let i = 0; i < 1000; i++) {
+          assert.equal(byteList2.readByte(), i & 255);
+      }
+    });
+
   });
 
-  describe('Functions', () => {
+  describe('Concatenation', () => {
 
     it('should concat(Buffer)', () => {
       const bytes = new ByteList([0, 1, 2]);
       bytes.concat(Buffer.from([3, 4, 5, 6, 7, 8, 9]));
 
-      for (let i=0; i<100; i++) {
+      for (let i = 0; i < 100; i++) {
         bytes.concat(Buffer.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]));
       }
 
       bytes.index = 0;
-      for (let i=0; i<101; i++) {
-        for (let j=0; j<10; j++) {
-            assert.equal(bytes.readByte(), j);
+      for (let i = 0; i < 101; i++) {
+        for (let j = 0; j < 10; j++) {
+          assert.equal(bytes.readByte(), j);
         }
       }
     });
@@ -170,13 +192,13 @@ describe('ByteList', () => {
       const bytes = new ByteList([0, 1, 2]);
       const otherBytes = new ByteList([3, 4, 5, 6, 7, 8, 9])
       bytes.concat(otherBytes);
-      for (let i=0; i<100; i++) {
+      for (let i = 0; i < 100; i++) {
         bytes.concat(new ByteList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]));
       }
 
       bytes.index = 0;
-      for (let i=0; i<101; i++) {
-        for (let j=0; j<10; j++) {
+      for (let i = 0; i < 101; i++) {
+        for (let j = 0; j < 10; j++) {
           assert.equal(bytes.readByte(), j);
         }
       }
@@ -185,17 +207,17 @@ describe('ByteList', () => {
     it('should concat(ArrayBuffer)', () => {
       let testData: ArrayBuffer = new ArrayBuffer(10);
       const view = new Int8Array(testData);
-      for (let i=0; i<10; i++) {
+      for (let i = 0; i < 10; i++) {
         view[i] = i;
       }
       const bytes = new ByteList(testData);
-      for (let i=0; i<100; i++) {
+      for (let i = 0; i < 100; i++) {
         bytes.concat(testData)
       }
 
       bytes.index = 0;
-      for (let i=0; i<101; i++) {
-        for (let j=0; j<10; j++) {
+      for (let i = 0; i < 101; i++) {
+        for (let j = 0; j < 10; j++) {
           assert.equal(bytes.readByte(), j);
         }
       }
@@ -211,8 +233,10 @@ describe('ByteList', () => {
       assert.equal(bytes.readByte(), 3);
       assert.equal(bytes.readByte(), 4);
     });
+  });
 
-    it('should insert()', () => {
+  describe('Functions', () => {
+    it('should be able to insert(Buffer)', () => {
       const bytes = new ByteList([1, 2]);
       bytes.index = 1;
       bytes.insert(Buffer.from([3, 4]));
@@ -223,7 +247,7 @@ describe('ByteList', () => {
       assert.equal(bytes.readByte(), 2);
     });
 
-    it('should be able to insert() a ByteList', () => {
+    it('should be able to insert(ByteList)', () => {
       const bytes = new ByteList([1, 2, 3, 4]);
       bytes.index = 2;
       bytes.insert(new ByteList([10, 10]));
