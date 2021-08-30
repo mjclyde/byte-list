@@ -282,17 +282,21 @@ describe('ByteList', () => {
 
   });
 
-  describe('Functions', () => {
+  describe('Peek Functions', () => {
     it('should peekByte()', () => {
       assert.throws(() => {
-        const bytes = new ByteList();
-        bytes.peekByte();
+        const b = new ByteList();
+        b.peekByte();
       });
 
-      const bytes2 = new ByteList([1, 2]);
-      bytes2.index = 0;
-      assert.equal(bytes2.peekByte(), 1);
-      assert.equal(bytes2.index, 0);
+      const bytes = new ByteList([1, 2]);
+      bytes.index = 0;
+      assert.equal(bytes.peekByte(), 1);
+      assert.equal(bytes.index, 0);
+
+      assert.throws(() => {
+        bytes.peekByte(2);
+      });
     });
 
     it('should peekUInt16()', () => {
@@ -307,6 +311,13 @@ describe('ByteList', () => {
       assert.equal(bytes.index, 0);
       bytes.useLittleEndian = false;
       assert.equal(bytes.peekUInt16(), 0x0102);
+
+      assert.throws(() => {
+        bytes.peekUInt16(1);
+      });
+      assert.throws(() => {
+        bytes.peekUInt16(2);
+      });
     });
 
     it('should peekUInt32()', () => {
@@ -321,8 +332,23 @@ describe('ByteList', () => {
       assert.equal(bytes.index, 0);
       bytes.useLittleEndian = false;
       assert.equal(bytes.peekUInt32(), 0x01020304);
-    });
 
+      assert.throws(() => {
+        bytes.peekUInt32(1);
+      });
+      assert.throws(() => {
+        bytes.peekUInt32(2);
+      });
+      assert.throws(() => {
+        bytes.peekUInt32(3);
+      });
+      assert.throws(() => {
+        bytes.peekUInt32(4);
+      });
+    });
+  });
+
+  describe('Functions', () => {
     it('should write()', () => {
       const b = new ByteList();
       b.writeByte(0xFA);
