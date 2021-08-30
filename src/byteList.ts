@@ -528,7 +528,8 @@ export class ByteList {
   private prepareBuffer(length: number) {
     const spaceLeft = this._buffer.length - this.length;
     if (length > spaceLeft) {
-      this._buffer = Buffer.concat([this._buffer, Buffer.alloc(this._paddingSize + length)], this._buffer.length + this._paddingSize + length);
+      const spaceNeeded = length - spaceLeft + this.paddingSize;
+      this._buffer = Buffer.concat([this._buffer, Buffer.alloc(spaceNeeded)], this._buffer.length + spaceNeeded);
     }
   }
 
