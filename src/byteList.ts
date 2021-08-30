@@ -96,7 +96,7 @@ export class ByteList {
 
   }
 
-  public insert(buffer) {
+  public insert(buffer: Buffer | ByteList| Uint8Array) {
     if (buffer instanceof ByteList) {
       buffer = buffer.getBuffer();
     }

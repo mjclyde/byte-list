@@ -235,7 +235,7 @@ describe('ByteList', () => {
     });
   });
 
-  describe('Functions', () => {
+  describe('Insertion', () => {
     it('should be able to insert(Buffer)', () => {
       const bytes = new ByteList([1, 2]);
       bytes.index = 1;
@@ -260,6 +260,29 @@ describe('ByteList', () => {
       assert.equal(bytes.readByte(), 4);
     });
 
+    it('should be able to insert(Uint8Array)', () => {
+      const testData: ArrayBuffer = new ArrayBuffer(10)
+      const view = new Int8Array(testData);
+      for (let i=0; i<testData.byteLength; i++) {
+        view[i] = i;
+      }
+      const bytes = new ByteList(view);
+      bytes.index = 2;
+      bytes.insert(new ByteList(view));
+      bytes.index = 0;
+      assert.equal(bytes.readByte(), 0);
+      assert.equal(bytes.readByte(), 1);
+      for (let i=0; i<10; i++) {
+        assert.equal(bytes.readByte(), i);
+      }
+      for (let i=2; i<10; i++) {
+        assert.equal(bytes.readByte(), i);
+      }
+    });
+
+  });
+
+  describe('Functions', () => {
     it('should peekByte()', () => {
       assert.throws(() => {
         const bytes = new ByteList();
