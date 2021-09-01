@@ -14,6 +14,11 @@ export enum DataTypes {
   BYTE_ARRAY,
 }
 
+// TODO: Address the following outstanding issues.
+//      1.  There is not way to change the initial padding.  It should parameter in the constructor
+//      2.  toSting prints all of the allocated space
+//      3.  BYTE_ARRAYs are encoded with a byte length, but don't prevent writing larger arrays
+
 export class ByteList {
 
   public static SetBit(num: number, val: boolean, bit: number): number {
@@ -286,7 +291,7 @@ export class ByteList {
     }
   }
 
-  public writeByteArray(list, options) {
+  public writeByteArray(list, options: any = {}) {
     this.writeByte(list ? list.length : 0, options);
     (list || []).forEach((l) => {
       this.writeByte(l, options);
