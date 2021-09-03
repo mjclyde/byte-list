@@ -77,8 +77,8 @@ export class ByteList {
   }
 
   public concat(bytes: ArrayBuffer | Buffer | ByteList | number[]) {
-    let length = 0;
-    let buffer: Uint8Array | number[] | null = null;
+    let length;
+    let buffer: Uint8Array | number[] | null;
     if (bytes instanceof ArrayBuffer) {
       buffer = new Uint8Array(bytes);
       length = buffer.length;
