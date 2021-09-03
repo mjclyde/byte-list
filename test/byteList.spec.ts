@@ -728,24 +728,102 @@ describe('ByteList', () => {
 
   describe('Trim Methods', () => {
     it('should trimLeft()', () => {
-      const bytes = new ByteList([1, 2, 3, 4]);
-      console.log(bytes.getBuffer());
-      bytes.trimLeft(1);
-      console.log(bytes.getBuffer());
+      let bytes = new ByteList([1, 2, 3, 4]);
+      assert.equal(bytes.index, 0);
+      assert.equal(bytes.length, 4);
+      let trimmedOffBytes = bytes.trimLeft(1);
+      assert(trimmedOffBytes);
+      assert.equal(trimmedOffBytes?.length, 1);
+      assert.equal(trimmedOffBytes?.readInt8(0), 1);
+      assert.equal(bytes.index, 0);
+      assert.equal(bytes.length, 3);
       bytes.index = 0;
       assert.equal(bytes.peekByte(), 2);
 
-      bytes.trimLeft(4);
+      trimmedOffBytes = bytes.trimLeft(4);
+      assert.equal(trimmedOffBytes?.length, 3);
+      assert.equal(trimmedOffBytes?.readInt8(0), 2);
+      assert.equal(trimmedOffBytes?.readInt8(1), 3);
+      assert.equal(trimmedOffBytes?.readInt8(2), 4);
+      assert.equal(bytes.index, 0);
+      assert.equal(bytes.length, 0);
+
+      bytes = new ByteList([1, 2, 3, 4, 5, 6]);
+      bytes.index = 2;
+      trimmedOffBytes = bytes.trimLeft(1);
+      assert.equal(trimmedOffBytes?.length, 1);
+      assert.equal(trimmedOffBytes?.readInt8(0), 1);
+      assert.equal(bytes.index, 1);
+      assert.equal(bytes.length, 5);
+
+      bytes.index = 2;
+      trimmedOffBytes = bytes.trimLeft(3);
+      assert.equal(trimmedOffBytes?.length, 3);
+      assert.equal(trimmedOffBytes?.readInt8(0), 2);
+      assert.equal(trimmedOffBytes?.readInt8(1), 3);
+      assert.equal(trimmedOffBytes?.readInt8(2), 4);
+      assert.equal(bytes.index, 0);
+      assert.equal(bytes.length, 2);
+
+      bytes.index = 0;
+      trimmedOffBytes = bytes.trimLeft(0);
+      assert.equal(trimmedOffBytes?.length, 0);
+      assert.equal(bytes.index, 0);
+      assert.equal(bytes.length, 2);
+
+      trimmedOffBytes = bytes.trimLeft(-1);
+      assert.equal(trimmedOffBytes?.length, 0);
+      assert.equal(bytes.index, 0);
+      assert.equal(bytes.length, 2);
+
+      bytes = new ByteList([]);
+      trimmedOffBytes = bytes.trimLeft(2);
+      assert.equal(trimmedOffBytes?.length, 0);
       assert.equal(bytes.index, 0);
       assert.equal(bytes.length, 0);
     });
 
     it('should trimRight()', () => {
-      const bytes = new ByteList([1, 2, 3, 4]);
-      bytes.trimRight(1);
+      let bytes = new ByteList([1, 2, 3, 4]);
+      let trimmedOffBytes = bytes.trimRight(1);
+      assert.equal(trimmedOffBytes?.length, 1);
+      assert.equal(trimmedOffBytes?.readInt8(0), 4);
       assert.equal(bytes.length, 3);
 
-      bytes.trimRight(4);
+      bytes.index=2;
+      trimmedOffBytes = bytes.trimRight(2);
+      assert.equal(trimmedOffBytes?.length, 2);
+      assert.equal(trimmedOffBytes?.readInt8(0), 2);
+      assert.equal(trimmedOffBytes?.readInt8(1), 3);
+      assert.equal(bytes.length, 1);
+      assert.equal(bytes.index, 1);
+
+      bytes = new ByteList([1, 2, 3, 4, 5, 6]);
+      assert.equal(bytes.index, 0);
+      assert.equal(bytes.length, 6);
+
+      bytes.trimRight(0);
+      trimmedOffBytes = bytes.trimRight(0);
+      assert.equal(trimmedOffBytes?.length, 0);
+      assert.equal(bytes.index, 0);
+      assert.equal(bytes.length, 6);
+
+      bytes.trimRight(-1);
+      assert.equal(trimmedOffBytes?.length, 0);
+      assert.equal(bytes.index, 0);
+      assert.equal(bytes.length, 6);
+
+      trimmedOffBytes = bytes.trimRight(7);
+      assert.equal(trimmedOffBytes?.length, 6);
+      assert.equal(bytes.index, 0);
+      assert.equal(bytes.length, 0);
+
+      bytes = new ByteList([]);
+      assert.equal(bytes.index, 0);
+      assert.equal(bytes.length, 0);
+
+      trimmedOffBytes = bytes.trimRight(7);
+      assert.equal(trimmedOffBytes?.length, 0);
       assert.equal(bytes.index, 0);
       assert.equal(bytes.length, 0);
     });

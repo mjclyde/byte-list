@@ -342,7 +342,14 @@ export class ByteList {
     }
   }
 
-  public trimLeft(count: number) {
+  public trimLeft(count: number) : Buffer {
+    if (count <= 0) {
+      return Buffer.from('');
+    }
+    if (count > this._length) {
+      count = this._length;
+    }
+
     const bytes = this._buffer.slice(0, count);
     this._buffer = this._buffer.slice(count, this._buffer.length);
     this.index = this.index - count;
@@ -350,21 +357,23 @@ export class ByteList {
       this.index = 0;
     }
     this._length -= count;
-    if (this._length < 0) {
-      this._length = 0;
-    }
     return bytes;
   }
 
-  public trimRight(count: number) {
-    this.index -= count;
-    if (this.index < 0) {
-      this.index = 0;
+  public trimRight(count: number) : Buffer {
+    if (count <= 0) {
+      return Buffer.from('');
     }
+    if (count > this._length) {
+      count = this._length;
+    }
+    const bytes = this._buffer.slice(this._length - count, this._length);
     this._length -= count;
-    if (this._length < 0) {
-      this._length = 0;
+    if (this.index > this._length) {
+      this.index = this._length;
     }
+
+    return bytes;
   }
 
   public readByte(): number {
