@@ -187,6 +187,82 @@ describe('ByteList', () => {
       assert(!b.readBool());
     });
 
+    it('Should writeInt8() positive', () => {
+      const b = new ByteList();
+
+      b.writeInt8(120);
+      b.writeInt8(127);
+      assert.equal(b.length, 2);
+      b.index = 0;
+      assert.equal(b.readInt8(), 120);
+      assert.equal(b.readInt8(), 127);
+    });
+
+    it('Should writeInt8() when byteList is constructed with other data', () => {
+      const b = new ByteList(Buffer.from([1, 2]));
+      assert.equal(b.index, 0);
+      assert.equal(b.readByte(), 1);
+      assert.equal(b.readByte(), 2);
+      b.writeInt8(3);
+      assert.equal(b.length, 3);
+      b.index = 0;
+      assert.equal(b.readByte(), 1);
+      assert.equal(b.readByte(), 2);
+      assert.equal(b.readInt8(), 3);
+    });
+
+    it('Should writeInt8() with options.insert', () => {
+      const b = new ByteList(Buffer.from([1, 2]));
+      assert.equal(b.index, 0);
+      assert.equal(b.readByte(), 1);
+      assert.equal(b.readByte(), 2);
+      b.index = 1;
+      b.writeInt8(3, { insert: true });
+      b.index = 0;
+      assert.equal(b.readByte(), 1);
+      assert.equal(b.readInt8(), 3);
+      assert.equal(b.readByte(), 2);
+    });
+
+    it('Should writeInt8() negative', () => {
+      const b = new ByteList();
+      b.writeInt8(-20);
+      b.writeInt8(-120);
+      b.index = 0;
+      assert.equal(b.readInt8(), -20);
+      assert.equal(b.readInt8(), -120);
+    });
+
+    it('Should writeInt8() negative with when byteList is constructed with other data', () => {
+      const b = new ByteList(Buffer.from([1, 2, -20]));
+      assert.equal(b.index, 0);
+      assert.equal(b.readByte(), 1);
+      assert.equal(b.readByte(), 2);
+      assert.equal(b.readInt8(), -20);
+      b.index = 2;
+      b.writeInt8(-127, { insert: true });
+      b.index = 0;
+      assert.equal(b.readByte(), 1);
+      assert.equal(b.readByte(), 2);
+      assert.equal(b.readInt8(), -127);
+      assert.equal(b.readInt8(), -20);
+    });
+
+    it('writeInt8() should throw range error', () => {
+      const b = new ByteList();
+      assert.throws(() => {
+        b.writeInt8(129);
+      });
+      assert.throws(() => {
+        b.writeInt8(-129);
+      });
+      b.writeInt8(127);
+      b.writeInt8(-127);
+      b.index = 0;
+      assert.equal(b.readInt8(), 127);
+      assert.equal(b.readInt8(), -127);
+    });
+
     it('should writeInt16()', () => {
       const b = new ByteList();
       b.writeInt16(0x0102);
