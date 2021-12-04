@@ -1,6 +1,6 @@
 {
   "name": "byte-list",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "Easy to use byte serialization/deserialization",
   "main": "byteList.js",
   "types": "byteList.d.ts",
@@ -8,8 +8,8 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
-    "test": "nyc mocha --opts mocha.opts && nyc report --reporter=text --reporter=html",
-    "test:watch": "mocha --opts mocha.opts -w",
+    "test": "nyc mocha && nyc report --reporter=text --reporter=html",
+    "test:watch": "mocha -w",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "package": "npm run build && cp package.json dist && cd dist && npm pack",
     "deploy": "npm run build && cp package.json dist && cd dist && npm publish"
@@ -42,8 +42,7 @@
     "typescript": "^4.2.4",
     "lodash": "^4.17.11"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "nyc": {
     "extension": [
       ".ts"

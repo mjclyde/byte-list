@@ -6,7 +6,6 @@
 ```sh
    $ npm install byte-list
 ```
-
 ## Usage
 
 ```javascript
@@ -40,3 +39,8 @@ console.log(bytes.readByte());
 console.log(bytes.readByte());
 // 52           (0x34)
 ```
+
+## Notes
+The static SetBit and GetBit methods assume the num parameter is a 32-bit integer
+and will only accept bit specification between 0 and 31.
+

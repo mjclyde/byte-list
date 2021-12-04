@@ -14,18 +14,29 @@ export enum DataTypes {
   BYTE_ARRAY,
 }
 
+// TODO: Address the following outstanding issues.
+//      1.  There is not way to change the initial padding.  It should parameter in the constructor
+//      2.  toSting prints all of the allocated space
+//      3.  BYTE_ARRAYs are encoded with a byte length, but don't prevent writing larger arrays
+
 export class ByteList {
 
   public static SetBit(num: number, val: boolean, bit: number): number {
+    if (bit < 0 || bit > 31) {
+      return num >>> 0;
+    }
     if (val) {
       num |= 1 << bit;
     } else {
       num &= ~(1 << bit);
     }
-    return num;
+    return num >>> 0;
   }
 
   public static GetBit(num: number, bit: number): boolean {
+    if (bit < 0 || bit > 31) {
+      return false;
+    }
     return (num & (1 << bit)) != 0
   }
 
@@ -66,8 +77,8 @@ export class ByteList {
   }
 
   public concat(bytes: ArrayBuffer | Buffer | ByteList | number[]) {
-    let length = 0;
-    let buffer: Uint8Array | number[] | null = null;
+    let length;
+    let buffer: Uint8Array | number[] | null;
     if (bytes instanceof ArrayBuffer) {
       buffer = new Uint8Array(bytes);
       length = buffer.length;
@@ -90,7 +101,7 @@ export class ByteList {
 
   }
 
-  public insert(buffer) {
+  public insert(buffer: Buffer | ByteList| Uint8Array) {
     if (buffer instanceof ByteList) {
       buffer = buffer.getBuffer();
     }
@@ -280,7 +291,7 @@ export class ByteList {
     }
   }
 
-  public writeByteArray(list, options) {
+  public writeByteArray(list, options: any = {}) {
     this.writeByte(list ? list.length : 0, options);
     (list || []).forEach((l) => {
       this.writeByte(l, options);
@@ -331,7 +342,14 @@ export class ByteList {
     }
   }
 
-  public trimLeft(count: number) {
+  public trimLeft(count: number) : Buffer {
+    if (count <= 0) {
+      return Buffer.from('');
+    }
+    if (count > this._length) {
+      count = this._length;
+    }
+
     const bytes = this._buffer.slice(0, count);
     this._buffer = this._buffer.slice(count, this._buffer.length);
     this.index = this.index - count;
@@ -339,21 +357,23 @@ export class ByteList {
       this.index = 0;
     }
     this._length -= count;
-    if (this._length < 0) {
-      this._length = 0;
-    }
     return bytes;
   }
 
-  public trimRight(count: number) {
-    this.index -= count;
-    if (this.index < 0) {
-      this.index = 0;
+  public trimRight(count: number) : Buffer {
+    if (count <= 0) {
+      return Buffer.from('');
     }
+    if (count > this._length) {
+      count = this._length;
+    }
+    const bytes = this._buffer.slice(this._length - count, this._length);
     this._length -= count;
-    if (this._length < 0) {
-      this._length = 0;
+    if (this.index > this._length) {
+      this.index = this._length;
     }
+
+    return bytes;
   }
 
   public readByte(): number {
@@ -522,7 +542,8 @@ export class ByteList {
   private prepareBuffer(length: number) {
     const spaceLeft = this._buffer.length - this.length;
     if (length > spaceLeft) {
-      this._buffer = Buffer.concat([this._buffer, Buffer.alloc(this._paddingSize + length)], this._buffer.length + this._paddingSize + length);
+      const spaceNeeded = length - spaceLeft + this.paddingSize;
+      this._buffer = Buffer.concat([this._buffer, Buffer.alloc(spaceNeeded)], this._buffer.length + spaceNeeded);
     }
   }
 

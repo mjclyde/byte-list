@@ -15,6 +15,7 @@ describe('Performance', () => {
 
   it('Should be able to concat buffers and add needed padding correctly', () => {
     const bytes = new ByteList();
+    assert.equal(bytes.paddingSize, 100);
     assert.equal(bytes.length, 0);
     assert.equal(bytes.index, 0);
     assert.equal(bytes.getBuffer().length, 0);
@@ -38,17 +39,17 @@ describe('Performance', () => {
     assert.equal(bytes.length, 105);
     assert.equal(bytes.index, 105);
     assert.equal(bytes.getBuffer().length, 105);
-    assert.equal(bytes['_buffer'].length, 300);
+    assert.equal(bytes['_buffer'].length, 205);
     bytes.concat(Buffer.alloc(100, 1));
     assert.equal(bytes.length, 205);
     assert.equal(bytes.index, 205);
     assert.equal(bytes.getBuffer().length, 205);
-    assert.equal(bytes['_buffer'].length, 300);
+    assert.equal(bytes['_buffer'].length, 205);
     bytes.concat(Buffer.alloc(100, 1));
     assert.equal(bytes.length, 305);
     assert.equal(bytes.index, 305);
     assert.equal(bytes.getBuffer().length, 305);
-    assert.equal(bytes['_buffer'].length, 500);
+    assert.equal(bytes['_buffer'].length, 405);
   });
 
   it('Should throw an error if trying to peek beyond the buffer length (even if there is padding available)', () => {
