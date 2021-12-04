@@ -159,6 +159,18 @@ export class ByteList {
     }
   }
 
+  public writeInt8(int8: number, options: any = {}) {
+    this.prepareBuffer(1);
+    const buf = options.insert ? Buffer.alloc(1) : this._buffer;
+    buf.writeInt8(!int8 ? 0 : int8, options.insert ? 0 : this.index);
+    if (options.insert) {
+      this.insert(buf);
+    } else {
+      this.index += 1;
+      this._length += 1;
+    }
+  }
+
   public writeBool(bool: boolean, options: any = {}) {
     this.writeByte(bool ? 1 : 0, options);
   }
