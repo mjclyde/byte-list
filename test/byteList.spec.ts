@@ -109,7 +109,7 @@ describe('ByteList', () => {
     });
 
     it('param = large Buffer', () => {
-      let buffer = Buffer.alloc(1000);
+      const buffer = Buffer.alloc(1000);
       const bytes = new ByteList(Buffer.from(buffer));
       assert.isOk(bytes);
       assert.isOk(bytes.getBuffer());
@@ -138,7 +138,8 @@ describe('ByteList', () => {
 
     it('param = strange data type', () => {
       const testData = { a: "hello", b: "there" }
-      const bytes = new ByteList(testData);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const bytes = new ByteList(testData as any);
       assert.isOk(bytes);
       assert.isOk(bytes.getBuffer());
       assert.equal(bytes.length, 0);
@@ -146,7 +147,7 @@ describe('ByteList', () => {
     });
 
     it('should be independent', () => {
-      let testData: ArrayBuffer = new ArrayBuffer(1000);
+      const testData: ArrayBuffer = new ArrayBuffer(1000);
       const view = new Int8Array(testData);
       for (let i = 0; i < 1000; i++) {
         view[i] = i & 255;
@@ -204,7 +205,7 @@ describe('ByteList', () => {
     });
 
     it('should concat(ArrayBuffer)', () => {
-      let testData: ArrayBuffer = new ArrayBuffer(10);
+      const testData: ArrayBuffer = new ArrayBuffer(10);
       const view = new Int8Array(testData);
       for (let i = 0; i < 10; i++) {
         view[i] = i;

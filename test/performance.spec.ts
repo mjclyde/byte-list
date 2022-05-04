@@ -1,7 +1,6 @@
 /* Created by mclyde on 7/10/2019 */
 import { assert } from 'chai';
 import { ByteList } from '../src/byteList';
-import * as _ from 'lodash';
 import { Buffer } from 'buffer';
 
 describe('Performance', () => {

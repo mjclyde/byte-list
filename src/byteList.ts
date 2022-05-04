@@ -14,6 +14,10 @@ export enum DataTypes {
   BYTE_ARRAY,
 }
 
+interface WriteOptions {
+  insert?: boolean;
+}
+
 // TODO: Address the following outstanding issues.
 //      1.  There is not way to change the initial padding.  It should parameter in the constructor
 //      2.  toSting prints all of the allocated space
@@ -41,7 +45,7 @@ export class ByteList {
   }
 
   public index: number;
-  public useLittleEndian: boolean = true;
+  public useLittleEndian = true;
   public get length() { return this._length; }
   public get paddingSize() { return this._paddingSize; }
   public set paddingSize(val: number) {
@@ -55,7 +59,7 @@ export class ByteList {
   private _length: number;
   private _buffer: Buffer;
 
-  constructor(bytes?: any) {
+  constructor(bytes?: string | ArrayBuffer | Buffer | ByteList | number[]) {
     this.index = 0;
     this._length = 0;
     this._buffer = Buffer.alloc(this._paddingSize);
@@ -101,7 +105,7 @@ export class ByteList {
 
   }
 
-  public insert(buffer: Buffer | ByteList| Uint8Array) {
+  public insert(buffer: Buffer | ByteList | Uint8Array) {
     if (buffer instanceof ByteList) {
       buffer = buffer.getBuffer();
     }
@@ -114,14 +118,14 @@ export class ByteList {
     this._length += buffer.length;
   }
 
-  public peekByte(offset: number = 0) {
+  public peekByte(offset = 0) {
     if (this.length < this.index + offset + 1) {
       throw new Error('Buffer Overrun');
     }
     return this._buffer.readUInt8(this.index + offset);
   }
 
-  public peekUInt16(offset: number = 0) {
+  public peekUInt16(offset = 0) {
     if (this.length < this.index + offset + 2) {
       throw new Error('Buffer Overrun');
     }
@@ -133,7 +137,7 @@ export class ByteList {
   }
 
 
-  public peekUInt32(offset: number = 0) {
+  public peekUInt32(offset = 0) {
     if (this.length < this.index + offset + 4) {
       throw new Error('Buffer Overrun');
     }
@@ -144,7 +148,7 @@ export class ByteList {
     }
   }
 
-  public writeByte(byte, options: any = {}) {
+  public writeByte(byte, options: WriteOptions = {}) {
     if (typeof byte === 'string' && byte.length === 1) {
       byte = byte.charCodeAt(0);
     }
@@ -159,7 +163,7 @@ export class ByteList {
     }
   }
 
-  public writeInt8(int8: number, options: any = {}) {
+  public writeInt8(int8: number, options: WriteOptions = {}) {
     this.prepareBuffer(1);
     const buf = options.insert ? Buffer.alloc(1) : this._buffer;
     buf.writeInt8(!int8 ? 0 : int8, options.insert ? 0 : this.index);
@@ -171,11 +175,11 @@ export class ByteList {
     }
   }
 
-  public writeBool(bool: boolean, options: any = {}) {
+  public writeBool(bool: boolean, options: WriteOptions = {}) {
     this.writeByte(bool ? 1 : 0, options);
   }
 
-  public writeInt16(int16: number, options: any = {}) {
+  public writeInt16(int16: number, options: WriteOptions = {}) {
     this.prepareBuffer(2);
     const buf = options.insert ? Buffer.alloc(2) : this._buffer;
     if (this.useLittleEndian) {
@@ -191,7 +195,7 @@ export class ByteList {
     }
   }
 
-  public writeInt32(int32: number, options: any = {}) {
+  public writeInt32(int32: number, options: WriteOptions = {}) {
     this.prepareBuffer(4);
     const buf = options.insert ? Buffer.alloc(4) : this._buffer;
     if (this.useLittleEndian) {
@@ -207,7 +211,7 @@ export class ByteList {
     }
   }
 
-  public writeUInt16(uint16: number, options: any = {}) {
+  public writeUInt16(uint16: number, options: WriteOptions = {}) {
     this.prepareBuffer(2);
     const buf = options.insert ? Buffer.alloc(2) : this._buffer;
     if (this.useLittleEndian) {
@@ -223,7 +227,7 @@ export class ByteList {
     }
   }
 
-  public writeUInt32(uint32: number, options: any = {}) {
+  public writeUInt32(uint32: number, options: WriteOptions = {}) {
     this.prepareBuffer(4);
     const buf = options.insert ? Buffer.alloc(4) : this._buffer;
     if (this.useLittleEndian) {
@@ -239,7 +243,7 @@ export class ByteList {
     }
   }
 
-  public writeFloat(float: number, options: any = {}) {
+  public writeFloat(float: number, options: WriteOptions = {}) {
     this.prepareBuffer(8);
     const buf = options.insert ? Buffer.alloc(8) : this._buffer;
     if (this.useLittleEndian) {
@@ -255,7 +259,7 @@ export class ByteList {
     }
   }
 
-  public writeDouble(double: number, options: any = {}) {
+  public writeDouble(double: number, options: WriteOptions = {}) {
     this.prepareBuffer(8);
     const buf = options.insert ? Buffer.alloc(8) : this._buffer;
     if (this.useLittleEndian) {
@@ -271,7 +275,7 @@ export class ByteList {
     }
   }
 
-  public writeDate(date: Date, options: any = {}) {
+  public writeDate(date: Date, options: WriteOptions = {}) {
     this.prepareBuffer(6);
     const buffer = options.insert ? Buffer.alloc(6) : this._buffer;
     buffer.writeUInt8(!date ? 0 : (date.getUTCFullYear() - 2000) & 0xFF, options.insert ? 0 : this.index++);
@@ -288,7 +292,7 @@ export class ByteList {
     }
   }
 
-  public writeString(str: string = '', options: { insert?: boolean, length?: number } = {}) {
+  public writeString(str = '', options: { insert?: boolean, length?: number } = {}) {
     if (!options.length) {
       const buf = Buffer.from(str, 'ascii');
       this.writeUInt16(buf.length, options);
@@ -303,58 +307,62 @@ export class ByteList {
     }
   }
 
-  public writeByteArray(list, options: any = {}) {
+  public writeByteArray(list: number[] | Buffer, options: WriteOptions = {}) {
     this.writeByte(list ? list.length : 0, options);
     (list || []).forEach((l) => {
       this.writeByte(l, options);
     });
   }
 
-  public writeData(type: DataTypes, val?: any, options?: any) {
+  public writeData(
+    type: DataTypes,
+    val?: number | string | boolean | Date | number[] | Buffer,
+    options?: WriteOptions,
+  ) {
     switch (type) {
       case DataTypes.BYTE:
-        this.writeByte(val, options);
+        this.writeByte(val as number, options);
         break;
       case DataTypes.BOOL:
-        this.writeBool(val, options);
+        this.writeBool(val as boolean, options);
         break;
       case DataTypes.INT8:
-        this.writeByte(val, options);
+        this.writeByte(val as number, options);
         break;
       case DataTypes.INT16:
-        this.writeInt16(val, options);
+        this.writeInt16(val as number, options);
         break;
       case DataTypes.INT32:
-        this.writeInt32(val, options);
+        this.writeInt32(val as number, options);
         break;
       case DataTypes.UINT8:
-        this.writeByte(val, options);
+        this.writeByte(val as number, options);
         break;
       case DataTypes.UINT16:
-        this.writeUInt16(val, options);
+        this.writeUInt16(val as number, options);
         break;
       case DataTypes.UINT32:
-        this.writeUInt32(val, options);
+        this.writeUInt32(val as number, options);
         break;
       case DataTypes.FLOAT:
-        this.writeFloat(val, options);
+        this.writeFloat(val as number, options);
         break;
       case DataTypes.DOUBLE:
-        this.writeDouble(val, options);
+        this.writeDouble(val as number, options);
         break;
       case DataTypes.DATE:
-        this.writeDate(val, options);
+        this.writeDate(val as Date, options);
         break;
       case DataTypes.STRING:
-        this.writeString(val, options);
+        this.writeString(val as string, options);
         break;
       case DataTypes.BYTE_ARRAY:
-        this.writeByteArray(val, options);
+        this.writeByteArray(val as number[] | Buffer, options);
         break;
     }
   }
 
-  public trimLeft(count: number) : Buffer {
+  public trimLeft(count: number): Buffer {
     if (count <= 0) {
       return Buffer.from('');
     }
@@ -372,7 +380,7 @@ export class ByteList {
     return bytes;
   }
 
-  public trimRight(count: number) : Buffer {
+  public trimRight(count: number): Buffer {
     if (count <= 0) {
       return Buffer.from('');
     }
@@ -512,7 +520,23 @@ export class ByteList {
     return array;
   }
 
-  public readData(type: DataTypes, options: any = {}): any {
+  readData(type: DataTypes.BYTE): number;
+  readData(type: DataTypes.INT8): number;
+  readData(type: DataTypes.UINT8): number;
+  readData(type: DataTypes.INT16): number;
+  readData(type: DataTypes.UINT16): number;
+  readData(type: DataTypes.INT32): number;
+  readData(type: DataTypes.UINT32): number;
+  readData(type: DataTypes.FLOAT): number;
+  readData(type: DataTypes.DOUBLE): number;
+  readData(type: DataTypes.BYTE_ARRAY): number[];
+  readData(type: DataTypes.BOOL): boolean;
+  readData(type: DataTypes.DATE): Date;
+  readData(type: DataTypes.STRING): string;
+  readData(
+    type: DataTypes,
+    options: { length?: number } = {},
+  ): number | string | boolean | Date | number[] | Buffer | null {
     switch (type) {
       case DataTypes.BYTE:
         return this.readByte();
@@ -545,7 +569,7 @@ export class ByteList {
 
   public toString() {
     let str = '';
-    for (const byte of (this._buffer as any)) {
+    for (const byte of (this._buffer)) {
       str += byte.toString(16).toUpperCase() + ' ';
     }
     return str;
