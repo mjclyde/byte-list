@@ -28,4 +28,5 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-    - run: npm run coverage
+    - if: ${{ matrix.node-version == 18.x }}
+      run: npm run coverage
