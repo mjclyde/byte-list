@@ -118,6 +118,24 @@ export class ByteList {
     this._length += buffer.length;
   }
 
+  public peekBits(startingBit: number, numberOfBits: number) {
+    if (numberOfBits > 32) {
+      throw new Error('Size larger than 32 bit precision');
+    }
+    const startingOffset = Math.floor(startingBit / 8);
+    if (this.length < (this.index + startingOffset + 1)) {
+      throw new Error('Buffer Overrun');
+    }
+    let number = 0;
+    for (let i = 0; i < 4; ++i) {
+      if (this.length < (this.index + startingOffset + 1 + i)) {
+        break;
+      }
+      number |= (this.peekByte(startingOffset + i) << (i * 8)) >>> 0;
+    }
+    return (number >> (startingBit % 8)) & (Math.pow(2, numberOfBits) - 1);
+  }
+
   public peekByte(offset = 0) {
     if (this.length < this.index + offset + 1) {
       throw new Error('Buffer Overrun');
