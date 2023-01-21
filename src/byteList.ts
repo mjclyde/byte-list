@@ -140,7 +140,7 @@ export class ByteList {
     const bitsUsed = (24 + (8 - shift)); // We will always have at least 3 bytes, but the 4th may only have a few bits
     if (numberOfBits > bitsUsed) { // Do we have enough numbers to calculate the number of bits we want?
       const extra = bytes.readByte();
-      number = (extra * 0x100000000) + number;
+      number += (extra * 0x100000000);
       number /= Math.pow(2, shift);
       return (number & (Math.pow(2, numberOfBits) - 1)) >>> 0
     } else {
