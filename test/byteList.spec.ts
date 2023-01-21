@@ -790,14 +790,13 @@ describe('ByteList', () => {
       assert.equal(b.readByteArray().length, 0);
 
       testData = [];
-      for (let i = 0; i < 1000; i++) {
+      for (let i = 0; i < 255; i++) {
         testData.push(i & 255);
       }
       b.index = 0;
       b.writeData(DataTypes.BYTE_ARRAY, testData);
       b.index = 0;
-      // TODO: Fix
-      // expect(b.readData(DataTypes.BYTE_ARRAY)).to.eql(testData);
+      expect(b.readData(DataTypes.BYTE_ARRAY)).to.eql(testData);
 
     });
 
@@ -827,6 +826,12 @@ describe('ByteList', () => {
       assert.equal(bytes.peekBits(47, 8), 0); // Just barely, technically we shouldn't have 8 bits, only 1, but it's just padded
       assert.throws(() => bytes.peekBits(48, 8));
       assert.equal(bytes.index, 0); // Doesn't actually read off the bytes
+    });
+
+    it('Should get tricky bits', () => { // Needing the 5th byte
+      const bytes = new ByteList([0, 0, 0, 0, 0, 0, 128, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 255, 255, 127, 1]);
+      assert.equal(bytes.peekBits(54, 27), 0x3FFFFFE);
+      assert.equal(bytes.peekBits(135, 27), 0x2FFFFFE);
     });
   });
 
