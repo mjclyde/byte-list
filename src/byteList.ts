@@ -183,9 +183,9 @@ export class ByteList {
     this.prepareBuffer(2);
     const buf = options.insert ? Buffer.alloc(2) : this._buffer;
     if (this.useLittleEndian) {
-      buf.writeInt16LE(!int16 ? 0 : int16 & 0xFFFF, options.insert ? 0 : this.index);
+      buf.writeInt16LE(!int16 ? 0 : int16, options.insert ? 0 : this.index);
     } else {
-      buf.writeInt16BE(!int16 ? 0 : int16 & 0xFFFF, options.insert ? 0 : this.index);
+      buf.writeInt16BE(!int16 ? 0 : int16, options.insert ? 0 : this.index);
     }
     if (options.insert) {
       this.insert(buf);
@@ -199,9 +199,9 @@ export class ByteList {
     this.prepareBuffer(4);
     const buf = options.insert ? Buffer.alloc(4) : this._buffer;
     if (this.useLittleEndian) {
-      buf.writeInt32LE(!int32 ? 0 : (int32 & 0xFFFFFFFF) >>> 0, options.insert ? 0 : this.index);
+      buf.writeInt32LE(!int32 ? 0 : int32, options.insert ? 0 : this.index);
     } else {
-      buf.writeInt32BE(!int32 ? 0 : (int32 & 0xFFFFFFFF) >>> 0, options.insert ? 0 : this.index);
+      buf.writeInt32BE(!int32 ? 0 : int32, options.insert ? 0 : this.index);
     }
     if (options.insert) {
       this.insert(buf);
