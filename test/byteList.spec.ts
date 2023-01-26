@@ -568,6 +568,11 @@ describe('ByteList', () => {
         assert.equal(c.readData(DataTypes.INT16), i);
       }
 
+      const d = new ByteList();
+      d.writeInt16(-1000);
+      d.index = 0;
+      assert.equal(d.readInt16(), -1000);
+
     });
 
     it('should writeInt32(), writeData(INT32), readInt32, readData(INT32)', () => {
@@ -592,6 +597,11 @@ describe('ByteList', () => {
       for (let i = 0; i < 1000; i++) {
         assert.equal(c.readData(DataTypes.INT32), i);
       }
+
+      const d = new ByteList();
+      d.writeInt32(-1000000);
+      d.index = 0;
+      assert.equal(d.readInt32(), -1000000);
     });
 
     it('should writeUInt16(), writeData(UINT16), readUInt16(), readData(UINT16)', () => {
