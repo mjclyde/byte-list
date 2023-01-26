@@ -1,5 +1,5 @@
-import {assert, expect} from 'chai';
-import {ByteList, DataTypes} from '../src/byteList';
+import { assert, expect } from 'chai';
+import { ByteList, DataTypes } from '../src/byteList';
 import * as _ from 'lodash';
 
 describe('ByteList', () => {
@@ -38,7 +38,7 @@ describe('ByteList', () => {
       assert.equal(ByteList.GetBit(number, 2), true);
 
       number = 0;
-      for (let i=0; i<31; i++) {
+      for (let i = 0; i < 31; i++) {
         number = ByteList.SetBit(0, true, i);
         assert.equal(ByteList.GetBit(number, i), true);
       }
@@ -158,13 +158,13 @@ describe('ByteList', () => {
       byteList2.concat(testData)
 
       byteList1.index = 1;
-      for (let i = 0; i< 1000; i++) {
+      for (let i = 0; i < 1000; i++) {
         Buffer.from([255])
       }
 
       byteList2.index = 0;
       for (let i = 0; i < 1000; i++) {
-          assert.equal(byteList2.readByte(), i & 255);
+        assert.equal(byteList2.readByte(), i & 255);
       }
     });
 
@@ -263,7 +263,7 @@ describe('ByteList', () => {
     it('should be able to insert(Uint8Array)', () => {
       const testData: ArrayBuffer = new ArrayBuffer(10)
       const view = new Int8Array(testData);
-      for (let i=0; i<testData.byteLength; i++) {
+      for (let i = 0; i < testData.byteLength; i++) {
         view[i] = i;
       }
       const bytes = new ByteList(view);
@@ -272,10 +272,10 @@ describe('ByteList', () => {
       bytes.index = 0;
       assert.equal(bytes.readByte(), 0);
       assert.equal(bytes.readByte(), 1);
-      for (let i=0; i<10; i++) {
+      for (let i = 0; i < 10; i++) {
         assert.equal(bytes.readByte(), i);
       }
-      for (let i=2; i<10; i++) {
+      for (let i = 2; i < 10; i++) {
         assert.equal(bytes.readByte(), i);
       }
     });
@@ -369,9 +369,9 @@ describe('ByteList', () => {
 
       b.index = 0;
       b.writeData(DataTypes.BYTE, 0x0A);
-      b.writeData(DataTypes.BYTE,0x0B);
-      b.writeData(DataTypes.BYTE,0x0C);
-      b.writeData(DataTypes.BYTE,0x0D);
+      b.writeData(DataTypes.BYTE, 0x0B);
+      b.writeData(DataTypes.BYTE, 0x0C);
+      b.writeData(DataTypes.BYTE, 0x0D);
 
       b.index = 0
       assert.equal(b.readData(DataTypes.BYTE), 0x0A);
@@ -390,8 +390,8 @@ describe('ByteList', () => {
       assert.equal(b.index, 5);
 
       b.index = 2;
-      b.writeByte(0xEA, {insert: true});
-      b.writeByte(0xEB, {insert: true});
+      b.writeByte(0xEA, { insert: true });
+      b.writeByte(0xEB, { insert: true });
       assert.equal(b.index, 4);
 
       b.index = 0;
@@ -406,9 +406,9 @@ describe('ByteList', () => {
     it('should writeData(UINT8) and readData(UINT8)', () => {
       const b = new ByteList();
       b.writeData(DataTypes.UINT8, 0x1A);
-      b.writeData(DataTypes.UINT8,0x1B);
-      b.writeData(DataTypes.UINT8,0x1C);
-      b.writeData(DataTypes.UINT8,0x1D);
+      b.writeData(DataTypes.UINT8, 0x1B);
+      b.writeData(DataTypes.UINT8, 0x1C);
+      b.writeData(DataTypes.UINT8, 0x1D);
 
       b.index = 0
       assert.equal(b.readData(DataTypes.UINT8), 0x1A);
@@ -420,9 +420,9 @@ describe('ByteList', () => {
     it('should writeData(INT8) and readData(INT8)', () => {
       const b = new ByteList();
       b.writeData(DataTypes.INT8, 0x2A);
-      b.writeData(DataTypes.INT8,0x2B);
-      b.writeData(DataTypes.INT8,0x2C);
-      b.writeData(DataTypes.INT8,0x2D);
+      b.writeData(DataTypes.INT8, 0x2B);
+      b.writeData(DataTypes.INT8, 0x2C);
+      b.writeData(DataTypes.INT8, 0x2D);
 
       b.index = 0
       assert.equal(b.readData(DataTypes.INT8), 0x2A);
@@ -458,9 +458,9 @@ describe('ByteList', () => {
 
       b.index = 0;
       b.writeData(DataTypes.BOOL, false);
-      b.writeData(DataTypes.BOOL,true);
-      b.writeData(DataTypes.BOOL,false);
-      b.writeData(DataTypes.BOOL,true);
+      b.writeData(DataTypes.BOOL, true);
+      b.writeData(DataTypes.BOOL, false);
+      b.writeData(DataTypes.BOOL, true);
 
       b.index = 0;
       assert(!b.readData(DataTypes.BOOL));
@@ -721,12 +721,12 @@ describe('ByteList', () => {
       const testDate = new Date();
       bytes = new ByteList();
       for (let i = 0; i < 1000; i++) {
-        testDate.setTime(currentDate.getTime() + i*1000);
+        testDate.setTime(currentDate.getTime() + i * 1000);
         bytes.writeData(DataTypes.DATE, testDate);
       }
       bytes.index = 0;
       for (let i = 0; i < 1000; i++) {
-        testDate.setTime(currentDate.getTime() + i*1000);
+        testDate.setTime(currentDate.getTime() + i * 1000);
         assert.equal(bytes.readData(DataTypes.DATE)?.toString(), testDate.toString());
       }
     });
@@ -773,16 +773,16 @@ describe('ByteList', () => {
       assert.equal(c.readString(), '');
 
       c = new ByteList();
-      c.writeString('123', {length: 7});
+      c.writeString('123', { length: 7 });
       c.index = 0;
-      assert.equal(c.readString({length: 7}), '123');
+      assert.equal(c.readString({ length: 7 }), '123');
 
       c = new ByteList();
-      c.writeString('123456789', {length: 5});
-      c.writeString('987654321', {length: 3});
+      c.writeString('123456789', { length: 5 });
+      c.writeString('987654321', { length: 3 });
       c.index = 0;
-      assert.equal(c.readString({length: 5}), '12345');
-      assert.equal(c.readString({length: 3}), '987');
+      assert.equal(c.readString({ length: 5 }), '12345');
+      assert.equal(c.readString({ length: 3 }), '987');
 
     });
 
@@ -792,25 +792,57 @@ describe('ByteList', () => {
       let testData = [0x11, 0x22, 0x33, 0x44]
       b.writeByteArray(testData);
       b.index = 0;
-      expect(b.readByteArray()).to.eql( [0x11, 0x22, 0x33, 0x44]);
+      expect(b.readByteArray()).to.eql([0x11, 0x22, 0x33, 0x44]);
 
       b.index = 0;
       b.writeByteArray([], {});
       b.index = 0;
       assert.equal(b.readByteArray().length, 0);
 
-      testData=[];
-      for (let i=0; i<1000; i++) {
+      testData = [];
+      for (let i = 0; i < 255; i++) {
         testData.push(i & 255);
       }
       b.index = 0;
       b.writeData(DataTypes.BYTE_ARRAY, testData);
       b.index = 0;
-      // TODO: Fix
-      // expect(b.readData(DataTypes.BYTE_ARRAY)).to.eql(testData);
+      expect(b.readData(DataTypes.BYTE_ARRAY)).to.eql(testData);
 
     });
 
+  });
+
+  describe('Get Bits', () => {
+    it('Should throw an error on get bits if it\'s beyond the buffer', () => {
+      const bytes = new ByteList();
+      assert.throws(() => bytes.peekBits(0, 8));
+
+      bytes.writeByte(1);
+      bytes.index = 0;
+      assert.throws(() => bytes.peekBits(8, 2));
+
+      assert.throws(() => bytes.peekBits(8, 33)); // We only allow 32 bit precision
+    });
+
+    it('Get Bits', () => {
+      const bytes = new ByteList();
+      bytes.writeUInt32(0xFF00FF00);
+      bytes.writeUInt16(0x00FF);
+      bytes.index = 0;
+
+      assert.equal(bytes.peekBits(24, 16), 0xFFFF);
+      assert.equal(bytes.peekBits(0, 16), 0xFF00);
+      assert.equal(bytes.peekBits(28, 8), 0xFF);
+      assert.equal(bytes.peekBits(47, 8), 0); // Just barely, technically we shouldn't have 8 bits, only 1, but it's just padded
+      assert.throws(() => bytes.peekBits(48, 8));
+      assert.equal(bytes.index, 0); // Doesn't actually read off the bytes
+    });
+
+    it('Should get tricky bits', () => { // Needing the 5th byte
+      const bytes = new ByteList([0, 0, 0, 0, 0, 0, 128, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 255, 255, 127, 1]);
+      assert.equal(bytes.peekBits(54, 27), 0x3FFFFFE);
+      assert.equal(bytes.peekBits(135, 27), 0x2FFFFFE);
+    });
   });
 
   describe('Trim Methods', () => {
@@ -877,7 +909,7 @@ describe('ByteList', () => {
       assert.equal(trimmedOffBytes?.readInt8(0), 4);
       assert.equal(bytes.length, 3);
 
-      bytes.index=2;
+      bytes.index = 2;
       trimmedOffBytes = bytes.trimRight(2);
       assert.equal(trimmedOffBytes?.length, 2);
       assert.equal(trimmedOffBytes?.readInt8(0), 2);
@@ -1062,8 +1094,8 @@ describe('ByteList', () => {
 
     it('Should be toString() for an empty ByteList', () => {
       let expected = '';
-      for (let i=0; i<100; i++) {
-        expected +='0 ';
+      for (let i = 0; i < 100; i++) {
+        expected += '0 ';
       }
       const bytes = new ByteList();
       assert.equal(bytes.toString(), expected);
@@ -1071,8 +1103,8 @@ describe('ByteList', () => {
 
     it('Should be toString() for non-empty ByteList', () => {
       let expected = '3 0 41 42 43 ';
-      for (let i=0; i<95; i++) {
-        expected +='0 ';
+      for (let i = 0; i < 95; i++) {
+        expected += '0 ';
       }
       const bytes = new ByteList('ABC');
       assert.equal(bytes.toString(), expected);

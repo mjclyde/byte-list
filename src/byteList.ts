@@ -118,6 +118,36 @@ export class ByteList {
     this._length += buffer.length;
   }
 
+  public peekBits(startingBit: number, numberOfBits: number) {
+    if (numberOfBits > 32) {
+      throw new Error('Size larger than 32 bit precision');
+    }
+    const startingOffset = Math.floor(startingBit / 8);
+    if (this.length < (this.index + startingOffset + 1)) {
+      throw new Error('Buffer Overrun');
+    }
+    const bytes = new ByteList();
+    for (let i = 0; i < 5; ++i) {
+      if (this.length < (this.index + startingOffset + i + 1)) {
+        bytes.writeByte(0);
+      } else {
+        bytes.writeByte(this.peekByte(startingOffset + i));
+      }
+    }
+    bytes.index = 0;
+    let number = bytes.readUInt32();
+    const shift = startingBit % 8;
+    const bitsUsed = (24 + (8 - shift)); // We will always have at least 3 bytes, but the 4th may only have a few bits
+    if (numberOfBits > bitsUsed) { // Do we have enough numbers to calculate the number of bits we want?
+      const extra = bytes.readByte();
+      number += (extra * 0x100000000);
+      number /= Math.pow(2, shift);
+      return (number & (Math.pow(2, numberOfBits) - 1)) >>> 0
+    } else {
+      return (number >>> shift) & (Math.pow(2, numberOfBits) - 1) >>> 0;
+    }
+  }
+
   public peekByte(offset = 0) {
     if (this.length < this.index + offset + 1) {
       throw new Error('Buffer Overrun');
@@ -299,7 +329,6 @@ export class ByteList {
       this.concat(buf);
     } else {
       const buf = Buffer.from(str.length > options.length ? str.substr(0, options.length) : str, 'ascii');
-      console.log(buf);
       this.concat(buf);
       for (let i = 0; i < options.length - str.length; i++) {
         this.writeByte(0);
